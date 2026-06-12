@@ -179,7 +179,36 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 /* tag */
 .tag{display:inline-block;font-size:9px;padding:2px 8px;border-radius:3px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
 .t-setup{background:#fef3c7;color:#92400e}.t-google{background:#dbeafe;color:#1e40af}.t-vendas{background:#f3e8ff;color:#6b21a8}.t-engaj{background:#dcfce7;color:#15803d}.t-leads{background:#fee2e2;color:#b91c1c}.t-serv{background:#f1f5f9;color:#475569}
-.top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+.period-sel{border:1px solid var(--border);border-radius:6px;padding:7px 12px;font-size:13px;background:#fff;cursor:pointer;color:var(--tp);transition:border-color .15s}
+.period-sel:focus{outline:none;border-color:var(--gold)}
+.validity-badge{background:#1a1a1a;border-radius:8px;padding:12px 16px;margin-top:12px;display:flex;align-items:center;justify-content:space-between}
+.validity-label{font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.8px}
+.validity-date{font-size:13px;color:#fff;font-weight:500;margin-top:2px}
+.validity-warning{font-size:11px;color:#ef4444;margin-top:2px}
+.meta-setup{text-align:center;padding:60px 20px}
+.meta-setup-icon{font-size:64px;margin-bottom:16px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.15))}
+.meta-setup-title{font-size:20px;font-weight:600;margin-bottom:8px}
+.meta-setup-desc{font-size:14px;color:#888;max-width:420px;margin:0 auto 24px;line-height:1.7}
+.meta-tok-bar{display:flex;align-items:center;gap:10px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:10px 16px;margin-bottom:18px;font-size:13px}
+.meta-tok-bar.err{background:#fef2f2;border-color:#fecaca}
+.meta-tok-dot{width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0}
+.meta-tok-dot.err{background:var(--red)}
+.meta-period-row{display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.meta-period-sel{border:1px solid var(--border);border-radius:6px;padding:7px 12px;font-size:13px;background:#fff;cursor:pointer;color:var(--tp)}
+.meta-period-sel:focus{outline:none;border-color:var(--gold)}
+.meta-acc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px}
+.meta-acc-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px;transition:all .15s}
+.meta-acc-card:hover{border-color:#ccc;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.meta-acc-name{font-size:13.5px;font-weight:600;margin-bottom:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meta-acc-kpis{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.meta-kpi-item{background:#f9f9f9;border-radius:6px;padding:8px 10px}
+.meta-kpi-lbl{font-size:9.5px;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.meta-kpi-val{font-size:15px;font-weight:600;color:var(--tp)}
+.meta-loading{text-align:center;padding:40px;color:#aaa;font-size:13px}
+.meta-inst{background:#f9f9f9;border-radius:8px;padding:14px;margin-bottom:16px}
+.meta-inst ol{font-size:12.5px;color:#555;padding-left:18px;line-height:2.2}
+.meta-inst a{color:var(--gold)}
 </style>
 </head>
 <body>
@@ -192,6 +221,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div class="sb-section">Jornada</div>
   <div class="sb-item active" onclick="go('dashboard')"><div class="sb-item-l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</div></div>
   <div class="sb-item" onclick="go('rentabilidade')"><div class="sb-item-l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Rentabilidade</div></div>
+  <div class="sb-item" onclick="go('meta-ads')"><div class="sb-item-l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 3a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/><path d="M6 15a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/><path d="M18 15a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/><path d="M8.7 13.5l6.6-3M8.7 10.5l6.6 3"/></svg>Meta Ads</div></div>
   <div class="sb-item" onclick="go('aquisicao')"><div class="sb-item-l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Aquisição</div></div>
   <div class="sb-item" style="opacity:.4;cursor:default"><div class="sb-item-l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>Torneio</div><span class="sb-badge">Em breve</span></div>
 
@@ -326,9 +356,65 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div class="page" id="page-plano-criativos" data-plan="criativos"></div>
 <div class="page" id="page-plano-sites" data-plan="sites"></div>
 
+<!-- META ADS -->
+<div class="page" id="page-meta-ads">
+  <div class="top-bar">
+    <div><div class="pg-title">Meta Ads</div><div class="pg-sub">Performance das campanhas em tempo real</div></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn-out" onclick="openMetaModal()">⚙ Configurar token</button>
+      <button class="btn-gold" id="meta-refresh-btn" onclick="refreshMeta()">↻ Atualizar dados</button>
+    </div>
+  </div>
+  <div id="meta-tok-bar-el" style="display:none" class="meta-tok-bar">
+    <div class="meta-tok-dot" id="meta-tok-dot"></div>
+    <span id="meta-tok-status">Token conectado — Meta Ads ativo</span>
+    <button onclick="clearMetaTok()" style="margin-left:auto;background:none;border:none;cursor:pointer;font-size:12px;color:#888">Desconectar</button>
+  </div>
+  <div id="meta-no-tok" class="meta-setup">
+    <div class="meta-setup-icon">📊</div>
+    <div class="meta-setup-title">Conecte sua conta Meta Ads</div>
+    <div class="meta-setup-desc">Monitore o desempenho das campanhas de todos os seus clientes diretamente no sistema, com dados em tempo real.</div>
+    <button class="btn-gold" onclick="openMetaModal()" style="padding:10px 24px;font-size:14px">Configurar agora →</button>
+  </div>
+  <div id="meta-data-view" style="display:none">
+    <div class="meta-period-row">
+      <span style="font-size:13px;color:#888;font-weight:500">Período:</span>
+      <select class="meta-period-sel" id="meta-period" onchange="refreshMeta()">
+        <option value="today">Hoje</option>
+        <option value="yesterday">Ontem</option>
+        <option value="this_week_mon_today">Esta semana</option>
+        <option value="this_month" selected>Este mês</option>
+        <option value="last_month">Mês passado</option>
+        <option value="last_30_days">Últimos 30 dias</option>
+      </select>
+    </div>
+    <div class="metrics-grid" id="meta-kpis">
+      <div class="met-card"><div class="met-dot" style="background:#1877f2"></div><div class="met-label">Total Investido</div><div class="met-val" id="meta-k-spend">—</div></div>
+      <div class="met-card"><div class="met-dot" style="background:var(--gold)"></div><div class="met-label">Contas Ativas</div><div class="met-val" id="meta-k-accs">—</div></div>
+      <div class="met-card"><div class="met-dot" style="background:var(--green)"></div><div class="met-label">Impressões</div><div class="met-val" id="meta-k-impr">—</div></div>
+      <div class="met-card"><div class="met-dot" style="background:#8b5cf6"></div><div class="met-label">Cliques Totais</div><div class="met-val" id="meta-k-clicks">—</div></div>
+    </div>
+    <div id="meta-acc-list" class="meta-acc-grid">
+      <div class="meta-loading" style="grid-column:1/-1">Clique em "Atualizar dados" para buscar a performance.</div>
+    </div>
+  </div>
+</div>
+
 <!-- RENTABILIDADE -->
 <div class="page" id="page-rentabilidade">
-  <div class="top-bar"><div><div class="pg-title">Rentabilidade</div><div class="pg-sub">Entenda quais clientes geram mais valor por hora trabalhada</div></div><button class="btn-gold" onclick="openClientModal('add')">+ Adicionar cliente</button></div>
+  <div class="top-bar">
+    <div><div class="pg-title">Rentabilidade</div><div class="pg-sub">Entenda quais clientes geram mais valor por hora trabalhada</div></div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <select class="period-sel" id="rent-period" onchange="renderClients()">
+        <option value="all" selected>Todos os clientes</option>
+        <option value="above">Acima da meta (≥ R$150/h)</option>
+        <option value="below">Abaixo da meta (&lt; R$150/h)</option>
+        <option value="high">Alto ticket (≥ R$3.000/mês)</option>
+        <option value="low">Baixo ticket (&lt; R$3.000/mês)</option>
+      </select>
+      <button class="btn-gold" onclick="openClientModal('add')">+ Adicionar cliente</button>
+    </div>
+  </div>
   <div class="metrics-grid">
     <div class="met-card"><div class="met-dot" style="background:#3b82f6"></div><div class="met-label">Total de Clientes</div><div class="met-val" id="r-total">0</div></div>
     <div class="met-card"><div class="met-dot" style="background:var(--green)"></div><div class="met-label">Receita Mensal</div><div class="met-val" id="r-receita">R$ 0</div></div>
@@ -380,12 +466,55 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div style="margin-bottom:14px"><div style="font-size:14px;font-weight:600">Monte o pacote do cliente</div><div style="font-size:12.5px;color:#888;margin-top:3px">Selecione os serviços que este cliente vai contratar</div></div>
     <div class="calc-layout">
       <div class="calc-l" id="calc-s2-svcs"></div>
-      <div class="calc-r"><div class="sum-dark"><div class="sum-hdr">Resumo do Pacote</div><div id="s2-lines"></div><hr class="sum-div"><div class="disc-row"><span style="font-size:12px;color:#888">Desconto</span><div style="display:flex;align-items:center;gap:4px"><span style="font-size:11px;color:var(--red)">– R$</span><input class="disc-inp" type="number" id="s2-disc" value="0" min="0" oninput="updS2()"></div></div><div class="sum-total" id="s2-total">R$ 0</div><div class="sum-period">/mês</div><div class="ent-res" id="s2-ent"></div><button class="btn-gold" style="width:100%;margin-top:14px;padding:10px;justify-content:center" onclick="dlProposal()">↓ Baixar proposta</button></div></div>
+      <div class="calc-r"><div class="sum-dark"><div class="sum-hdr">Resumo do Pacote</div><div id="s2-lines"></div><hr class="sum-div"><div class="disc-row"><span style="font-size:12px;color:#888">Desconto</span><div style="display:flex;align-items:center;gap:4px"><span style="font-size:11px;color:var(--red)">– R$</span><input class="disc-inp" type="number" id="s2-disc" value="0" min="0" oninput="updS2()"></div></div><div class="sum-total" id="s2-total">R$ 0</div><div class="sum-period">/mês</div>
+          <div style="background:#1a1a1a;border:1px solid #2a2a2d;border-radius:8px;padding:12px 14px;margin-top:12px;display:flex;align-items:center;justify-content:space-between">
+            <div>
+              <div style="font-size:10px;color:#888;text-transform:uppercase;letter-spacing:.8px">Validade do orçamento</div>
+              <div style="font-size:13px;color:#fff;font-weight:500;margin-top:3px" id="s2-validity">Selecione os serviços</div>
+              <div style="font-size:11px;color:#d4a843;margin-top:2px" id="s2-validity-warn"></div>
+            </div>
+            <div style="font-size:22px">📅</div>
+          </div>
+          <div class="ent-res" id="s2-ent"></div>
+          <button class="btn-gold" style="width:100%;margin-top:14px;padding:10px;justify-content:center" onclick="dlProposal()">↓ Baixar proposta</button></div></div>
     </div>
   </div>
 </div>
 
 </main>
+
+<!-- MODAL: META ADS -->
+<div class="modal-overlay" id="modal-meta">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-title">Configurar Meta Ads</div>
+      <button class="modal-close" onclick="closeMetaModal()">×</button>
+    </div>
+    <div class="meta-inst">
+      <div style="font-size:13px;font-weight:600;margin-bottom:6px">Como obter seu token de acesso:</div>
+      <ol>
+        <li>Acesse <a href="https://developers.facebook.com/tools/explorer/" target="_blank">developers.facebook.com/tools/explorer</a></li>
+        <li>Selecione ou crie um App Meta</li>
+        <li>Clique em <strong>"Generate Access Token"</strong></li>
+        <li>Adicione a permissão <strong>ads_read</strong></li>
+        <li>Clique em Generate novamente e copie o token</li>
+      </ol>
+    </div>
+    <div class="form-grp">
+      <label class="form-lbl">Token de Acesso Meta</label>
+      <input class="form-inp" id="meta-token-inp" type="text" placeholder="EAABwzLixnjYBO...">
+      <div style="font-size:11px;color:#aaa;margin-top:4px">O token padrão dura ~1h. Para 60 dias, gere um Long-Lived Token no Token Debugger.</div>
+    </div>
+    <div id="meta-tok-err" style="color:#e05252;font-size:12px;margin-bottom:8px;display:none;padding:8px;background:#fef2f2;border-radius:5px"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px;flex-wrap:wrap;gap:8px">
+      <a href="https://developers.facebook.com/tools/explorer/" target="_blank" class="btn-out" style="font-size:12px">🔗 Abrir Graph Explorer</a>
+      <div style="display:flex;gap:8px">
+        <button class="btn-out" onclick="closeMetaModal()">Cancelar</button>
+        <button class="btn-gold" onclick="connectMeta()" id="meta-connect-btn">Conectar</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- MODAL: CLIENT -->
 <div class="modal-overlay" id="modal-client">
@@ -398,6 +527,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <div class="form-grp"><label class="form-lbl">Horas equipe/mês</label><input class="form-inp" id="mc-heq" type="number" placeholder="0"></div>
       <div class="form-grp"><label class="form-lbl">Horas sócio/mês</label><input class="form-inp" id="mc-hso" type="number" placeholder="20"></div>
     </div>
+    <div class="form-grp"><label class="form-lbl">ID Conta Meta Ads (opcional)</label><input class="form-inp" id="mc-meta" type="text" placeholder="Ex: 123456789012345"></div>
     <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
       <button class="btn-out" onclick="closeClientModal()">Cancelar</button>
       <button class="btn-gold" onclick="saveClient()">Salvar</button>
@@ -799,15 +929,27 @@ function updS2(){
   const tEl=document.getElementById('s2-total');if(tEl)tEl.textContent='R$ '+tot.toLocaleString('pt-BR');
   const eEl=document.getElementById('s2-ent');
   if(eEl)eEl.innerHTML=sel.length?`<div style="font-size:9px;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:7px">Entregáveis inclusos</div>`+sel.map(p=>{const ds=getSelDels(p.id);return ds.length?`<div class="ent-gt">${p.name}</div>${ds.map(d=>`<div class="ent-it"><span style="color:var(--green);font-size:12px;flex-shrink:0">✓</span>${d}</div>`).join('')}`:''}).join(''):'';
+  updValidity(sel.length>0);
 }
 
+function calcExpiry(){const d=new Date();d.setDate(d.getDate()+7);return d;}
+function fmtExpDate(d){return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});}
+function updValidity(hasSel){
+  const vEl=document.getElementById('s2-validity');
+  const vWarn=document.getElementById('s2-validity-warn');
+  if(!vEl)return;
+  if(hasSel){vEl.textContent=fmtExpDate(calcExpiry());if(vWarn)vWarn.textContent='Proposta válida por 7 dias';}
+  else{vEl.textContent='Selecione os serviços';if(vWarn)vWarn.textContent='';}
+}
 function dlProposal(){
   const sel=Object.values(plans).filter(p=>s2[p.id]);
   const disc=parseInt(document.getElementById('s2-disc')?.value)||0;
   const tot=Math.max(0,sel.reduce((s,p)=>s+p.price,0)-disc);
   const yt=getYTCfg();
+  const expStr=fmtExpDate(calcExpiry());
   let txt=`PROPOSTA COMERCIAL — ÁGIOS GROWTH\n`;
-  txt+=`Data: ${new Date().toLocaleDateString('pt-BR')}\n${'─'.repeat(45)}\n\n`;
+  txt+=`Data: ${new Date().toLocaleDateString('pt-BR')}\n`;
+  txt+=`Validade: ${expStr} (7 dias)\n${'─'.repeat(45)}\n\n`;
   sel.forEach(p=>{
     txt+=`${p.name.toUpperCase()} — R$ ${p.price.toLocaleString('pt-BR')}/mês\n`;
     txt+='Entregáveis:\n';
@@ -825,9 +967,19 @@ function dlProposal(){
 function renderClients(){
   const tb=document.getElementById('cli-tbody');if(!tb)return;
   if(!clients.length){tb.innerHTML='<tr><td colspan="8" style="text-align:center;padding:30px;color:#aaa;font-size:13px">Nenhum cliente. Clique em "Adicionar cliente".</td></tr>';updMetrics();return;}
-  tb.innerHTML=clients.map((c,i)=>{
+  const filter=document.getElementById('rent-period')?.value||'all';
+  const filtered=clients.filter((c,i)=>{
+    const th=c.hEquipe+c.hSocio,rent=th>0?c.valor/th:null;
+    if(filter==='above')return rent!==null&&rent>=150;
+    if(filter==='below')return rent!==null&&rent<150;
+    if(filter==='high')return c.valor>=3000;
+    if(filter==='low')return c.valor<3000;
+    return true;
+  });
+  if(!filtered.length){tb.innerHTML='<tr><td colspan="8" style="text-align:center;padding:30px;color:#aaa;font-size:13px">Nenhum cliente encontrado com este filtro.</td></tr>';updMetrics();return;}
+  tb.innerHTML=filtered.map((c,i)=>{
     const th=c.hEquipe+c.hSocio,rent=th>0?c.valor/th:null,ok=rent!==null&&rent>=150;
-    return `<tr><td style="color:#aaa">${i+1}</td><td style="font-weight:600">${c.nome}</td><td>R$ ${c.valor.toLocaleString('pt-BR')}</td><td>${c.hEquipe}h</td><td>${c.hSocio}h</td><td>${th}h</td><td>${rent!==null?`<span class="${ok?'rent-ok':'rent-low'}">R$ ${Math.round(rent)}/h</span><span class="${ok?'bk-ok':'bk-low'}">${ok?'OK':'Baixa'}</span>`:'—'}</td><td style="white-space:nowrap"><button class="act-btn" onclick="openClientModal('edit',${i})">✏️</button><button class="act-btn" onclick="delClient(${i})">🗑</button></td></tr>`;
+    const metaIcon=c.metaAccId?'<span title="Conta Meta: act_'+c.metaAccId+'" style="font-size:11px;background:#dbeafe;color:#1d4ed8;padding:1px 5px;border-radius:3px;margin-left:5px">META</span>':'';return `<tr><td style="color:#aaa">${i+1}</td><td style="font-weight:600">${c.nome}${metaIcon}</td><td>R$ ${c.valor.toLocaleString('pt-BR')}</td><td>${c.hEquipe}h</td><td>${c.hSocio}h</td><td>${th}h</td><td>${rent!==null?`<span class="${ok?'rent-ok':'rent-low'}">R$ ${Math.round(rent)}/h</span><span class="${ok?'bk-ok':'bk-low'}">${ok?'OK':'Baixa'}</span>`:'—'}</td><td style="white-space:nowrap"><button class="act-btn" onclick="openClientModal('edit',${i})">✏️</button><button class="act-btn" onclick="delClient(${i})">🗑</button></td></tr>`;
   }).join('');
   updMetrics();
 }
@@ -867,13 +1019,13 @@ function updDash(){
 // ======= CLIENT MODAL =======
 function openClientModal(mode,idx){
   document.getElementById('modal-client').classList.add('open');
-  if(mode==='edit'&&idx!==undefined){const c=clients[idx];document.getElementById('mc-title').textContent='Editar cliente';document.getElementById('mc-idx').value=idx;document.getElementById('mc-nome').value=c.nome;document.getElementById('mc-valor').value=c.valor;document.getElementById('mc-heq').value=c.hEquipe;document.getElementById('mc-hso').value=c.hSocio;}
+  if(mode==='edit'&&idx!==undefined){const c=clients[idx];document.getElementById('mc-title').textContent='Editar cliente';document.getElementById('mc-idx').value=idx;document.getElementById('mc-nome').value=c.nome;document.getElementById('mc-valor').value=c.valor;document.getElementById('mc-heq').value=c.hEquipe;document.getElementById('mc-hso').value=c.hSocio;document.getElementById('mc-meta').value=c.metaAccId||'';}
   else{document.getElementById('mc-title').textContent='Adicionar cliente';document.getElementById('mc-idx').value='';document.getElementById('mc-nome').value='';document.getElementById('mc-valor').value='';document.getElementById('mc-heq').value='';document.getElementById('mc-hso').value='';}
 }
 function closeClientModal(){document.getElementById('modal-client').classList.remove('open');}
 function saveClient(){
   const nome=document.getElementById('mc-nome').value.trim();if(!nome){alert('Informe o nome.');return;}
-  const obj={nome,valor:parseInt(document.getElementById('mc-valor').value)||0,hEquipe:parseInt(document.getElementById('mc-heq').value)||0,hSocio:parseInt(document.getElementById('mc-hso').value)||0};
+  const metaAccId=document.getElementById('mc-meta')?.value.trim().replace('act_','')||'';const obj={nome,valor:parseInt(document.getElementById('mc-valor').value)||0,hEquipe:parseInt(document.getElementById('mc-heq').value)||0,hSocio:parseInt(document.getElementById('mc-hso').value)||0,metaAccId};
   const idx=document.getElementById('mc-idx').value;
   if(idx!=='')clients[parseInt(idx)]=obj;else clients.push(obj);
   saveAll();closeClientModal();renderClients();
@@ -906,6 +1058,146 @@ function handleImport(inp){
 
 // ======= TOAST =======
 function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2500);}
+
+// ======= META ADS =======
+const GRAPH_URL='https://graph.facebook.com/v19.0';
+let metaToken=localStorage.getItem('agios_meta_token')||'';
+let metaAccsData=[];
+try{const ca=localStorage.getItem('agios_meta_accounts');if(ca)metaAccsData=JSON.parse(ca);}catch(e){}
+
+function openMetaModal(){
+  document.getElementById('meta-token-inp').value=metaToken;
+  document.getElementById('meta-tok-err').style.display='none';
+  document.getElementById('modal-meta').classList.add('open');
+}
+function closeMetaModal(){document.getElementById('modal-meta').classList.remove('open');}
+function clearMetaTok(){
+  if(!confirm('Desconectar conta Meta Ads?'))return;
+  localStorage.removeItem('agios_meta_token');
+  metaToken='';metaAccsData=[];
+  renderMetaDash();toast('Meta Ads desconectado.');
+}
+
+async function connectMeta(){
+  const t=document.getElementById('meta-token-inp').value.trim();
+  if(!t){showMetaErr('Cole o token de acesso.');return;}
+  const btn=document.getElementById('meta-connect-btn');
+  btn.textContent='Verificando...';btn.disabled=true;
+  document.getElementById('meta-tok-err').style.display='none';
+  try{
+    const r=await fetch(`${GRAPH_URL}/me?fields=id,name&access_token=${t}`);
+    const d=await r.json();
+    if(d.error){showMetaErr(d.error.message);btn.textContent='Conectar';btn.disabled=false;return;}
+    localStorage.setItem('agios_meta_token',t);
+    metaToken=t;
+    closeMetaModal();
+    toast('Meta Ads conectado! Buscando contas...');
+    await loadMetaAccs();
+    renderMetaDash();
+  }catch(e){showMetaErr('Erro de rede. Verifique o token.');}
+  btn.textContent='Conectar';btn.disabled=false;
+}
+
+function showMetaErr(msg){const el=document.getElementById('meta-tok-err');el.textContent=msg;el.style.display='block';}
+
+async function loadMetaAccs(){
+  if(!metaToken)return;
+  try{
+    const r=await fetch(`${GRAPH_URL}/me/adaccounts?fields=name,account_id,currency,account_status&limit=50&access_token=${metaToken}`);
+    const d=await r.json();
+    if(d.error)throw new Error(d.error.message);
+    metaAccsData=d.data||[];
+    localStorage.setItem('agios_meta_accounts',JSON.stringify(metaAccsData));
+  }catch(e){const c=localStorage.getItem('agios_meta_accounts');if(c)metaAccsData=JSON.parse(c);}
+}
+
+async function refreshMeta(){
+  if(!metaToken){openMetaModal();return;}
+  const btn=document.getElementById('meta-refresh-btn');
+  if(btn){btn.textContent='↻ Buscando...';btn.disabled=true;}
+  const accEl=document.getElementById('meta-acc-list');
+  if(accEl)accEl.innerHTML='<div class="meta-loading" style="grid-column:1/-1">Buscando dados da Meta Ads...</div>';
+  const period=document.getElementById('meta-period')?.value||'this_month';
+  try{
+    if(!metaAccsData.length)await loadMetaAccs();
+    const insights={};
+    for(const acc of metaAccsData.slice(0,10)){
+      try{
+        const r=await fetch(`${GRAPH_URL}/act_${acc.account_id}/insights?fields=spend,impressions,clicks,actions&date_preset=${period}&access_token=${metaToken}`);
+        const d=await r.json();
+        insights[acc.account_id]=d.data?.[0]||null;
+      }catch(e){insights[acc.account_id]=null;}
+    }
+    localStorage.setItem('agios_meta_cache_'+period,JSON.stringify({ts:Date.now(),data:insights}));
+    renderMetaAccounts(insights);
+    renderMetaKpis(insights);
+  }catch(e){toast('Erro ao buscar dados. Token pode ter expirado.');}
+  if(btn){btn.textContent='↻ Atualizar dados';btn.disabled=false;}
+}
+
+function getMainResult(actions){
+  if(!actions||!actions.length)return{type:'—',val:0};
+  const pri=['purchase','lead','complete_registration','add_to_cart','contact'];
+  for(const p of pri){const a=actions.find(x=>x.action_type===p);if(a)return{type:p,val:parseInt(a.value)};}
+  return{type:actions[0].action_type,val:parseInt(actions[0].value)};
+}
+function fmtAction(t){return{purchase:'Compras',lead:'Leads',complete_registration:'Cadastros',add_to_cart:'Carrinhos',contact:'Contatos'}[t]||t;}
+
+function renderMetaAccounts(insights){
+  const el=document.getElementById('meta-acc-list');if(!el)return;
+  if(!metaAccsData.length){el.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;color:#aaa;font-size:13px">Nenhuma conta publicitária encontrada neste token.</div>';return;}
+  el.innerHTML=metaAccsData.map(acc=>{
+    const ins=insights?.[acc.account_id];
+    const spend=ins?'R$ '+parseFloat(ins.spend||0).toLocaleString('pt-BR',{minimumFractionDigits:2}):'—';
+    const impr=ins?parseInt(ins.impressions||0).toLocaleString('pt-BR'):'—';
+    const clicks=ins?parseInt(ins.clicks||0).toLocaleString('pt-BR'):'—';
+    const res=ins?getMainResult(ins.actions):{type:'—',val:0};
+    const cpr=ins&&res.val>0?'R$ '+(parseFloat(ins.spend)/res.val).toFixed(2):'—';
+    const ok=acc.account_status===1;
+    return `<div class="meta-acc-card">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px">
+        <div class="meta-acc-name" style="max-width:160px">${acc.name}</div>
+        <span style="font-size:10px;padding:2px 7px;border-radius:3px;background:${ok?'#dcfce7':'#fee2e2'};color:${ok?'#15803d':'#b91c1c'};font-weight:600;flex-shrink:0">${ok?'Ativa':'Inativa'}</span>
+      </div>
+      <div class="meta-acc-kpis">
+        <div class="meta-kpi-item"><div class="meta-kpi-lbl">Gasto</div><div class="meta-kpi-val" style="font-size:13px">${spend}</div></div>
+        <div class="meta-kpi-item"><div class="meta-kpi-lbl">Impressões</div><div class="meta-kpi-val" style="font-size:13px">${impr}</div></div>
+        <div class="meta-kpi-item"><div class="meta-kpi-lbl">${fmtAction(res.type)}</div><div class="meta-kpi-val" style="font-size:13px">${ins?res.val:'—'}</div></div>
+        <div class="meta-kpi-item"><div class="meta-kpi-lbl">Custo/Resultado</div><div class="meta-kpi-val" style="font-size:13px">${cpr}</div></div>
+      </div>
+      <div style="font-size:10px;color:#bbb;margin-top:8px">ID: act_${acc.account_id}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderMetaKpis(insights){
+  const vals=Object.values(insights||{}).filter(Boolean);
+  const spend=vals.reduce((s,i)=>s+parseFloat(i.spend||0),0);
+  const impr=vals.reduce((s,i)=>s+parseInt(i.impressions||0),0);
+  const clicks=vals.reduce((s,i)=>s+parseInt(i.clicks||0),0);
+  const setT=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+  setT('meta-k-spend','R$ '+spend.toLocaleString('pt-BR',{minimumFractionDigits:2}));
+  setT('meta-k-accs',metaAccsData.length);
+  setT('meta-k-impr',impr.toLocaleString('pt-BR'));
+  setT('meta-k-clicks',clicks.toLocaleString('pt-BR'));
+}
+
+function renderMetaDash(){
+  const noTok=document.getElementById('meta-no-tok');
+  const dv=document.getElementById('meta-data-view');
+  const tb=document.getElementById('meta-tok-bar-el');
+  if(!noTok||!dv)return;
+  if(!metaToken){
+    noTok.style.display='block';dv.style.display='none';
+    if(tb)tb.style.display='none';
+  }else{
+    noTok.style.display='none';dv.style.display='block';
+    if(tb){tb.style.display='flex';tb.classList.remove('err');}
+    const period=document.getElementById('meta-period')?.value||'this_month';
+    const cached=localStorage.getItem('agios_meta_cache_'+period);
+    if(cached){const c=JSON.parse(cached);renderMetaAccounts(c.data);renderMetaKpis(c.data);}
+  }
+}
 
 // ======= INIT =======
 loadAll();updDash();
