@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ágios Growth — Sistema de Planos</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--black:#111;--sb:#1c1c1e;--sb-hover:#2a2a2d;--gold:#d4a843;--gold-h:#c49530;--green:#22c55e;--red:#ef4444;--bg:#f4f4f4;--white:#fff;--border:#e5e5e5;--tp:#111;--ts:#6b7280;--tm:#9ca3af;--sbt:#a0a0a8;--sbw:#f0f0f0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--tp);height:100vh;overflow:hidden;display:flex}
+.sb{width:228px;min-width:228px;background:var(--sb);display:flex;flex-direction:column;height:100vh;overflow-y:auto}
+.sb::-webkit-scrollbar{width:3px}.sb::-webkit-scrollbar-thumb{background:#333}
+.sb-logo{padding:18px 16px 12px;border-bottom:1px solid #2a2a2d}
+.sb-brand{font-size:13px;font-weight:700;color:#fff;letter-spacing:2px;text-transform:uppercase}
+.sb-tag{font-size:9px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-top:2px}
+.sb-section{padding:14px 16px 4px;font-size:9px;color:#555;letter-spacing:1.5px;text-transform:uppercase;font-weight:600}
+.sb-item{display:flex;align-items:center;justify-content:space-between;padding:7px 16px;cursor:pointer;color:var(--sbt);font-size:12.5px;transition:all .15s;border-left:2px solid transparent}
+.sb-item:hover{background:var(--sb-hover);color:var(--sbw)}
+.sb-item.active{background:var(--sb-hover);color:var(--gold);border-left-color:var(--gold)}
+.sb-item-l{display:flex;align-items:center;gap:8px}
+.sb-item svg{width:13px;height:13px;flex-shrink:0}
+.sb-arr{font-size:9px;color:#555;transition:transform .2s}
+.sb-sub{padding:5px 16px 5px 38px;cursor:pointer;color:#666;font-size:12px;transition:all .15s;border-left:2px solid transparent}
+.sb-sub:hover{background:var(--sb-hover);color:var(--sbw)}
+.sb-sub.active{color:var(--gold);border-left-color:var(--gold);background:var(--sb-hover)}
+.sb-badge{font-size:9px;background:#2a2a2d;color:#555;padding:2px 7px;border-radius:3px}
+.sb-foot{margin-top:auto;padding:12px 16px;border-top:1px solid #2a2a2d;display:flex;align-items:center;gap:8px}
+.avatar{width:32px;height:32px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#111;flex-shrink:0}
+.main{flex:1;overflow-y:auto;height:100vh}
+.main::-webkit-scrollbar{width:4px}.main::-webkit-scrollbar-thumb{background:#ddd}
+.page{display:none;padding:28px 34px;min-height:100vh}
+.page.active{display:block}
+.pg-title{font-size:22px;font-weight:600;color:var(--tp);margin-bottom:3px}
+.pg-sub{font-size:13px;color:var(--ts);margin-bottom:22px}
+.btn-gold{background:var(--gold);color:#111;border:none;padding:8px 16px;border-radius:6px;font-size:12.5px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:background .15s}
+.btn-gold:hover{background:var(--gold-h)}
+.btn-out{background:var(--white);border:1px solid var(--border);padding:7px 14px;border-radius:6px;font-size:12.5px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;color:var(--tp);transition:all .15s}
+.btn-out:hover{background:#f5f5f5}
+.card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:18px}
+.metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px}
+.met-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px}
+.met-dot{width:9px;height:9px;border-radius:50%;margin-bottom:10px}
+.met-label{font-size:10.5px;color:var(--ts);text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px}
+.met-val{font-size:20px;font-weight:600}
+/* Plan page */
+.plan-layout{display:grid;grid-template-columns:270px 1fr;gap:18px}
+.ticket-card{background:var(--black);border-radius:10px;padding:20px;color:#fff}
+.tick-label{font-size:9.5px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.tick-val{font-size:28px;font-weight:700}
+.tick-period{font-size:11px;color:#666;margin-top:3px}
+.del-list{margin-top:14px}
+.del-row{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid #222;cursor:pointer;transition:opacity .15s}
+.del-row:hover{opacity:.8}
+.del-row:last-child{border-bottom:none}
+.del-check-box{width:15px;height:15px;border-radius:3px;border:1.5px solid #555;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;transition:all .15s}
+.del-check-box.on{background:var(--green);border-color:var(--green)}
+.del-check-box.on::after{content:'✓';color:#fff;font-size:9px;font-weight:700}
+.del-text{font-size:12.5px;color:#bbb;line-height:1.4}
+.del-text.off{text-decoration:line-through;color:#555}
+.mat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mat-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px;position:relative}
+.mat-card-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
+.mat-title{font-size:13px;font-weight:600}
+.badge-ok{background:#dcfce7;color:#15803d;font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600}
+.mat-desc{font-size:12px;color:var(--ts);margin-bottom:10px;line-height:1.45}
+.mat-saved-dot{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;margin-right:4px;opacity:0;transition:opacity .3s}
+.mat-saved-dot.show{opacity:1}
+.btn-matview{padding:6px 12px;border-radius:5px;font-size:11.5px;font-weight:600;cursor:pointer;border:1px solid}
+.btn-gn{background:#dcfce7;color:#15803d;border-color:#bbf7d0}
+.btn-bl{background:#dbeafe;color:#1d4ed8;border-color:#bfdbfe}
+.btn-am{background:#fef3c7;color:#92400e;border-color:#fde68a}
+.btn-pu{background:#ede9fe;color:#5b21b6;border-color:#ddd6fe}
+.aula-box{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px;margin-top:12px}
+.aula-label{font-size:9.5px;color:var(--ts);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+/* Calculadora */
+.calc-step{display:flex;align-items:center;gap:0;margin-bottom:22px}
+.step-it{display:flex;align-items:center;gap:7px;font-size:13px;color:#aaa}
+.step-it.on{color:var(--tp);font-weight:500}
+.step-it.done{color:var(--green)}
+.step-c{width:26px;height:26px;border-radius:50%;background:#e5e5e5;color:#aaa;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0}
+.step-it.on .step-c{background:var(--gold);color:#111}
+.step-it.done .step-c{background:var(--green);color:#fff}
+.step-ln{flex:1;height:1px;background:#e5e5e5;margin:0 10px}
+.step-ln.done{background:var(--green)}
+.calc-layout{display:flex;gap:18px;align-items:flex-start}
+.calc-l{flex:1;min-width:0}
+.calc-r{width:285px;flex-shrink:0;position:sticky;top:0}
+.svc-group-lbl{font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:1.5px;margin-top:16px;margin-bottom:5px;padding-bottom:5px;border-bottom:1px solid #eee}
+.svc-row{display:flex;align-items:center;gap:10px;padding:10px 13px;border:1px solid var(--border);border-radius:8px;margin-bottom:5px;background:var(--white);cursor:pointer;transition:border-color .15s}
+.svc-row:hover{border-color:#ccc}
+.svc-row.sel{border-color:var(--green);background:#f0fdf4}
+.svc-chk{width:17px;height:17px;border-radius:4px;border:1.5px solid #ccc;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.svc-chk.on{background:var(--green);border-color:var(--green)}
+.svc-chk.on::after{content:'✓';color:#fff;font-size:10px;font-weight:700}
+.svc-name{flex:1;font-size:13.5px;font-weight:500}
+.price-inp{width:88px;border:1px solid #e0e0e0;border-radius:5px;padding:5px 8px;font-size:13px;font-weight:500;text-align:right;background:#f9f9f9}
+.price-inp:focus{outline:none;border-color:var(--gold);background:var(--white)}
+.del-expand{padding:8px 13px 12px 40px;background:#f9fafb;border:1px solid #e8e8e8;border-top:none;border-radius:0 0 8px 8px;margin-top:-5px;margin-bottom:5px}
+.del-ex-row{display:flex;align-items:flex-start;gap:7px;padding:5px 0;cursor:pointer;border-bottom:1px solid #f0f0f0}
+.del-ex-row:last-of-type{border-bottom:none}
+.del-ex-chk{width:14px;height:14px;border-radius:3px;border:1.5px solid #ccc;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;transition:all .15s}
+.del-ex-chk.on{background:var(--green);border-color:var(--green)}
+.del-ex-chk.on::after{content:'✓';color:#fff;font-size:8px;font-weight:700}
+.add-del-row{display:flex;gap:6px;margin-top:8px}
+.add-del-inp{flex:1;border:1px solid #ddd;border-radius:5px;padding:5px 9px;font-size:12px}
+.add-del-inp:focus{outline:none;border-color:var(--gold)}
+.add-del-btn{background:var(--gold);border:none;border-radius:5px;padding:5px 10px;cursor:pointer;font-weight:700}
+/* Summary */
+.sum-dark{background:var(--black);border-radius:10px;padding:18px;color:#fff}
+.sum-hdr{font-size:13px;font-weight:600;border-bottom:1px solid #2a2a2d;padding-bottom:10px;margin-bottom:10px}
+.sum-line{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:6px}
+.sum-line span:first-child{color:#888}
+.sum-line span:last-child{color:#fff}
+.sum-div{border:none;border-top:1px solid #2a2a2d;margin:10px 0}
+.disc-row{display:flex;align-items:center;justify-content:space-between;margin:7px 0}
+.disc-inp{background:#1a1a1a;border:1px solid #333;border-radius:4px;color:#fff;padding:4px 8px;font-size:12.5px;width:78px;text-align:right}
+.disc-inp:focus{outline:none;border-color:var(--gold)}
+.sum-total{font-size:26px;font-weight:700;color:var(--gold);margin:10px 0 2px}
+.sum-period{font-size:11px;color:#666}
+.ent-res{margin-top:12px;padding-top:10px;border-top:1px solid #2a2a2d}
+.ent-gt{font-size:9px;color:var(--gold);text-transform:uppercase;letter-spacing:1.5px;margin:9px 0 4px}
+.ent-it{display:flex;align-items:flex-start;gap:5px;font-size:11px;color:#888;margin-bottom:3px}
+/* Rentabilidade */
+.cli-table{width:100%;border-collapse:collapse;background:var(--white);border-radius:10px;overflow:hidden;border:1px solid var(--border)}
+.cli-table th{padding:9px 14px;font-size:10.5px;text-transform:uppercase;letter-spacing:.7px;color:var(--ts);font-weight:600;border-bottom:1px solid var(--border);text-align:left}
+.cli-table td{padding:12px 14px;font-size:13px;border-bottom:1px solid var(--border)}
+.cli-table tr:last-child td{border-bottom:none}
+.cli-table tr:hover td{background:#fafafa}
+.rent-ok{color:var(--green);font-weight:600}
+.rent-low{color:var(--red);font-weight:600}
+.bk-ok{background:#dcfce7;color:#15803d;font-size:10px;padding:2px 6px;border-radius:3px;font-weight:600;margin-left:5px}
+.bk-low{background:#fee2e2;color:#b91c1c;font-size:10px;padding:2px 6px;border-radius:3px;font-weight:600;margin-left:5px}
+.act-btn{background:none;border:none;cursor:pointer;padding:4px 6px;border-radius:4px;transition:background .15s;font-size:15px}
+.act-btn:hover{background:#f0f0f0}
+/* Journey */
+.jrn-wrap{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:18px}
+.jrn-levels{display:flex;gap:5px;margin:12px 0;overflow-x:auto;padding-bottom:4px}
+.jlev{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:70px}
+.jlev-belt{width:54px;height:54px;border-radius:50%;overflow:hidden;border:2.5px solid #444;transition:all .25s;cursor:default;flex-shrink:0}
+.jlev.current .jlev-belt{border-color:#d4a843;box-shadow:0 0 0 4px rgba(212,168,67,.18),0 2px 12px rgba(0,0,0,.25)}
+.jlev-belt img{width:100%;height:100%;object-fit:cover;object-position:center;display:block}
+.acq-icon-prem{width:70px;height:70px;background:#111;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2.5px solid #d4a843;box-shadow:0 0 18px rgba(212,168,67,.2),0 4px 16px rgba(0,0,0,.35);margin-bottom:16px;flex-shrink:0}
+.acq-icon-prem svg{width:36px;height:36px}
+.jlev-c{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:700;border:2px solid transparent}
+.jlev.current .jlev-c{border-color:var(--gold);box-shadow:0 0 0 3px rgba(212,168,67,.2)}
+.jlev-n{font-size:10px;color:#888;font-weight:500}
+.jlev-v{font-size:9px;color:#aaa}
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--white);border-radius:12px;padding:22px;width:440px;max-width:92vw}
+.modal-lg{width:580px;max-height:88vh;overflow-y:auto}
+.modal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.modal-title{font-size:15px;font-weight:600}
+.modal-close{background:none;border:none;cursor:pointer;font-size:22px;color:#aaa;line-height:1}
+.modal-close:hover{color:#555}
+.form-grp{margin-bottom:13px}
+.form-lbl{font-size:12px;color:#666;display:block;margin-bottom:4px;font-weight:500}
+.form-inp{width:100%;border:1px solid #ddd;border-radius:6px;padding:8px 11px;font-size:13.5px;transition:border-color .15s}
+.form-inp:focus{outline:none;border-color:var(--gold)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+/* Material modal tabs */
+.mat-tabs{display:flex;gap:4px;margin-bottom:16px;border-bottom:1px solid var(--border);padding-bottom:0}
+.mat-tab{padding:8px 14px;font-size:13px;cursor:pointer;border:none;background:none;color:var(--ts);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
+.mat-tab.active{color:var(--gold);border-bottom-color:var(--gold);font-weight:600}
+.mat-tab:hover{color:var(--tp)}
+.mat-ta{width:100%;border:1px solid #ddd;border-radius:8px;padding:10px 12px;font-size:13px;resize:vertical;min-height:160px;line-height:1.6}
+.mat-ta:focus{outline:none;border-color:var(--gold)}
+/* Aquisição 3D icons */
+.acq-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px}
+.acq-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px;transition:all .2s}
+.acq-card:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.08)}
+.acq-icon{font-size:42px;margin-bottom:12px;display:block;filter:drop-shadow(0 4px 6px rgba(0,0,0,.15))}
+.acq-name{font-size:14px;font-weight:600;margin-bottom:5px}
+.acq-desc{font-size:12.5px;color:var(--ts);line-height:1.5}
+/* Toast */
+@keyframes fadeInUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.toast{position:fixed;bottom:24px;right:24px;background:#1a1a1a;color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;z-index:9999;animation:fadeInUp .25s ease}
+/* tag */
+.tag{display:inline-block;font-size:9px;padding:2px 8px;border-radius:3px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.t-setup{background:#fef3c7;color:#92400e}.t-google{background:#dbeafe;color:#1e40af}.t-vendas{background:#f3e8ff;color:#6b21a8}.t-engaj{background:#dcfce7;color:#15803d}.t-leads{background:#fee2e2;color:#b91c1c}.t-serv{background:#f1f5f9;color:#475569}
+.top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+</style>
+</head>
+<body>
+
+<nav class="sb">
+  <div class="sb-logo">
+    <div class="sb-brand">Ágios Growth</div>
+    <div class="sb-tag">Sistema de Planos</div>
+  </div>
+  <div class="sb-section">Jornada</div>
+  <div class="sb-item active" onclick="go('dashboard')"><div class="sb-item-l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</div></div>
+  <div class="sb-item" onclick="go('rentabilidade')"><div class="sb-item-l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Rentabilidade</div></div>
+  <div class="sb-item" onclick="go('aquisicao')"><div class="sb-item-l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Aquisição</div></div>
+  <div class="sb-item" style="opacity:.4;cursor:default"><div class="sb-item-l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>Torneio</div><span class="sb-badge">Em breve</span></div>
+
+  <div class="sb-section">Planos Escaláveis</div>
+  <div class="sb-item" onclick="toggleSub('sub-setup');go('plano-setup')"><div class="sb-item-l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>Setup</div><span class="sb-arr" id="arr-setup">›</span></div>
+
+  <div class="sb-item" onclick="toggleSub('sub-google');go('plano-gsearch')"><div class="sb-item-l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Descoberta Google</div><span class="sb-arr" id="arr-google">›</span></div>
+  <div id="sub-google" style="display:none">
+    <div class="sb-sub" onclick="go('plano-gsearch')">Google Search</div>
+    <div class="sb-sub" onclick="go('plano-gmb')">Google Meu Negócio</div>
+    <div class="sb-sub" onclick="go('plano-descoberta')">Descoberta</div>
+  </div>
+
+  <div class="sb-item" onclick="toggleSub('sub-vendas');go('plano-trafego')"><div class="sb-item-l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>Vendas</div><span class="sb-arr" id="arr-vendas">›</span></div>
+  <div id="sub-vendas" style="display:none">
+    <div class="sb-sub" onclick="go('plano-trafego')">Tráfego Direto</div>
+    <div class="sb-sub" onclick="go('plano-lowticket')">Low Ticket</div>
+    <div class="sb-sub" onclick="go('plano-highticket')">High Ticket</div>
+    <div class="sb-sub" onclick="go('plano-perpetuo')">Perpétuo</div>
+    <div class="sb-sub" onclick="go('plano-lancamento')">Lançamentos</div>
+    <div class="sb-sub" onclick="go('plano-meteorico')">Meteórico</div>
+    <div class="sb-sub" onclick="go('plano-ecommerce')">E-commerce</div>
+    <div class="sb-sub" onclick="go('plano-funis')">Funis</div>
+  </div>
+
+  <div class="sb-item" onclick="toggleSub('sub-engaj');go('plano-seguidores')"><div class="sb-item-l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>Engajamento</div><span class="sb-arr" id="arr-engaj">›</span></div>
+  <div id="sub-engaj" style="display:none">
+    <div class="sb-sub" onclick="go('plano-seguidores')">Seguidores</div>
+    <div class="sb-sub" onclick="go('plano-panfletagem')">Panfletagem</div>
+    <div class="sb-sub" onclick="go('plano-youtube')">Inscritos YouTube</div>
+    <div class="sb-sub" onclick="go('plano-lives')">Lives e Webinars</div>
+    <div class="sb-sub" onclick="go('plano-calendario')">Calendário Festivo</div>
+  </div>
+
+  <div class="sb-item" onclick="toggleSub('sub-leads');go('plano-leadsmeta')"><div class="sb-item-l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.18 6.18l1.95-1.95a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Leads</div><span class="sb-arr" id="arr-leads">›</span></div>
+  <div id="sub-leads" style="display:none">
+    <div class="sb-sub" onclick="go('plano-leadsmeta')">Leads Meta</div>
+    <div class="sb-sub" onclick="go('plano-leadsgoogle')">Leads Google</div>
+    <div class="sb-sub" onclick="go('plano-whatsapp')">WhatsApp Ads</div>
+  </div>
+
+  <div class="sb-item" onclick="toggleSub('sub-serv');go('plano-trackeamento')"><div class="sb-item-l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>Serviços</div><span class="sb-arr" id="arr-serv">›</span></div>
+  <div id="sub-serv" style="display:none">
+    <div class="sb-sub" onclick="go('plano-trackeamento')">Gestão e Trackeamento</div>
+    <div class="sb-sub" onclick="go('plano-followup')">Follow-up de Vendas</div>
+    <div class="sb-sub" onclick="go('plano-plataformas')">Config. Plataformas</div>
+    <div class="sb-sub" onclick="go('plano-criativos')">Pacote de Criativos</div>
+    <div class="sb-sub" onclick="go('plano-sites')">Criação de Sites</div>
+  </div>
+
+  <div class="sb-section">Ferramentas</div>
+  <div class="sb-item" onclick="go('calculadora')"><div class="sb-item-l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M8 10h8M8 14h4"/></svg>Calculadora de Pacotes</div></div>
+
+  <div class="sb-section">Gestão</div>
+  <div class="sb-item" style="opacity:.4;cursor:default"><div class="sb-item-l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Gestão Interna</div><span class="sb-badge">Em breve</span></div>
+  <div class="sb-item" style="opacity:.4;cursor:default"><div class="sb-item-l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M22 2 12 12M16 2h6v6"/></svg>Automações</div><span class="sb-badge">Em breve</span></div>
+
+  <div class="sb-foot">
+    <div class="avatar">TN</div>
+    <div style="flex:1"><div style="font-size:12px;color:#e0e0e0;font-weight:500">Toni</div><div style="font-size:10px;color:#555">Ágios Growth</div></div>
+    <button onclick="openYT()" title="Configurar YouTube" style="background:none;border:none;cursor:pointer;color:#555;font-size:18px;transition:color .15s" onmouseover="this.style.color='#d4a843'" onmouseout="this.style.color='#555'">⚙</button>
+  </div>
+</nav>
+
+<main class="main">
+
+<!-- DASHBOARD -->
+<div class="page active" id="page-dashboard">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+    <div><div class="pg-title">Bom dia, Toni!</div><div class="pg-sub">Você está evoluindo sua jornada — cada cliente importa.</div></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn-out" onclick="importData()">↑ Importar</button>
+      <button class="btn-out" onclick="exportData()">↓ Exportar</button>
+    </div>
+  </div>
+  <div class="metrics-grid">
+    <div class="met-card"><div class="met-dot" style="background:var(--gold)"></div><div class="met-label">Faturamento Mensal</div><div class="met-val" id="d-fat">R$ 0</div></div>
+    <div class="met-card"><div class="met-dot" style="background:#3b82f6"></div><div class="met-label">Clientes Ativos</div><div class="met-val" id="d-cli">0</div></div>
+    <div class="met-card"><div class="met-dot" style="background:var(--green)"></div><div class="met-label">Ticket Médio</div><div class="met-val" id="d-ticket">R$ 0</div></div>
+    <div class="met-card"><div class="met-dot" style="background:var(--red)"></div><div class="met-label">Abaixo da Meta</div><div class="met-val" id="d-below">0</div></div>
+  </div>
+  <div class="jrn-wrap">
+    <div style="font-size:15px;font-weight:600;margin-bottom:3px">Jornada de Faturamento</div>
+    <div style="font-size:12px;color:#888" id="jrn-msg">Adicione clientes em Rentabilidade para calcular seu nível.</div>
+    <div class="jrn-levels">
+      <div class="jlev" data-key="branco"><div class="jlev-belt"><img src="belt-branco.png" alt="Branco"></div><div class="jlev-n">Branco</div><div class="jlev-v">R$5k</div></div>
+      <div class="jlev" data-key="verde"><div class="jlev-belt"><img src="belt-verde.png" alt="Verde"></div><div class="jlev-n">Verde</div><div class="jlev-v">R$10k</div></div>
+      <div class="jlev" data-key="azul"><div class="jlev-belt"><img src="belt-azul.png" alt="Azul"></div><div class="jlev-n">Azul</div><div class="jlev-v">R$15k</div></div>
+      <div class="jlev" data-key="vermelho"><div class="jlev-belt"><img src="belt-vermelho.png" alt="Vermelho"></div><div class="jlev-n">Vermelho</div><div class="jlev-v">R$20k</div></div>
+      <div class="jlev" data-key="preto"><div class="jlev-belt"><img src="belt-preto.png" alt="Preto"></div><div class="jlev-n">Preto</div><div class="jlev-v">R$40k</div></div>
+      <div class="jlev" data-key="laranja"><div class="jlev-belt"><img src="belt-laranja.png" alt="Laranja"></div><div class="jlev-n">Laranja</div><div class="jlev-v">R$70k</div></div>
+      <div class="jlev" data-key="prata"><div class="jlev-belt"><img src="belt-prata.png" alt="Prata"></div><div class="jlev-n">Prata</div><div class="jlev-v">R$100k</div></div>
+      <div class="jlev" data-key="dourado"><div class="jlev-belt"><img src="belt-dourado.png" alt="Dourado"></div><div class="jlev-n">Dourado</div><div class="jlev-v">R$100k+</div></div>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+    <div class="card"><div style="font-size:14px;font-weight:600;margin-bottom:12px">Acesso rápido</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <button class="btn-gold" onclick="go('calculadora')" style="justify-content:center;gap:8px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="10" y2="10"/><line x1="14" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="10" y2="14"/><line x1="14" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="10" y2="18"/><line x1="14" y1="18" x2="16" y2="18"/></svg> Calculadora de Pacotes</button>
+        <button class="btn-out" onclick="go('rentabilidade')" style="justify-content:center;gap:8px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg> Ver Rentabilidade</button>
+        <button class="btn-out" onclick="go('plano-seguidores')" style="justify-content:center;gap:8px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="8" x2="17" y2="8"/><line x1="9" y1="12" x2="17" y2="12"/><line x1="9" y1="16" x2="17" y2="16"/><circle cx="6" cy="8" r="1" fill="currentColor"/><circle cx="6" cy="12" r="1" fill="currentColor"/><circle cx="6" cy="16" r="1" fill="currentColor"/></svg> Planos Escaláveis</button>
+      </div>
+    </div>
+    <div class="card"><div style="font-size:14px;font-weight:600;margin-bottom:12px">Meus clientes</div><div id="dash-cli-list" style="font-size:13px;color:#aaa">Nenhum cliente cadastrado.</div></div>
+  </div>
+</div>
+
+<!-- PLAN PAGES (rendered by JS) -->
+<div class="page" id="page-plano-setup" data-plan="setup"></div>
+<div class="page" id="page-plano-gsearch" data-plan="gsearch"></div>
+<div class="page" id="page-plano-gmb" data-plan="gmb"></div>
+<div class="page" id="page-plano-descoberta" data-plan="descoberta"></div>
+<div class="page" id="page-plano-seguidores" data-plan="seguidores"></div>
+<div class="page" id="page-plano-panfletagem" data-plan="panfletagem"></div>
+<div class="page" id="page-plano-youtube" data-plan="youtube"></div>
+<div class="page" id="page-plano-lives" data-plan="lives"></div>
+<div class="page" id="page-plano-calendario" data-plan="calendario"></div>
+<div class="page" id="page-plano-trafego" data-plan="trafego"></div>
+<div class="page" id="page-plano-lowticket" data-plan="lowticket"></div>
+<div class="page" id="page-plano-highticket" data-plan="highticket"></div>
+<div class="page" id="page-plano-perpetuo" data-plan="perpetuo"></div>
+<div class="page" id="page-plano-lancamento" data-plan="lancamento"></div>
+<div class="page" id="page-plano-meteorico" data-plan="meteorico"></div>
+<div class="page" id="page-plano-ecommerce" data-plan="ecommerce"></div>
+<div class="page" id="page-plano-funis" data-plan="funis"></div>
+<div class="page" id="page-plano-leadsmeta" data-plan="leadsmeta"></div>
+<div class="page" id="page-plano-leadsgoogle" data-plan="leadsgoogle"></div>
+<div class="page" id="page-plano-whatsapp" data-plan="whatsapp"></div>
+<div class="page" id="page-plano-trackeamento" data-plan="trackeamento"></div>
+<div class="page" id="page-plano-followup" data-plan="followup"></div>
+<div class="page" id="page-plano-plataformas" data-plan="plataformas"></div>
+<div class="page" id="page-plano-criativos" data-plan="criativos"></div>
+<div class="page" id="page-plano-sites" data-plan="sites"></div>
+
+<!-- RENTABILIDADE -->
+<div class="page" id="page-rentabilidade">
+  <div class="top-bar"><div><div class="pg-title">Rentabilidade</div><div class="pg-sub">Entenda quais clientes geram mais valor por hora trabalhada</div></div><button class="btn-gold" onclick="openClientModal('add')">+ Adicionar cliente</button></div>
+  <div class="metrics-grid">
+    <div class="met-card"><div class="met-dot" style="background:#3b82f6"></div><div class="met-label">Total de Clientes</div><div class="met-val" id="r-total">0</div></div>
+    <div class="met-card"><div class="met-dot" style="background:var(--green)"></div><div class="met-label">Receita Mensal</div><div class="met-val" id="r-receita">R$ 0</div></div>
+    <div class="met-card"><div class="met-dot" style="background:var(--gold)"></div><div class="met-label">Rentab. Média</div><div class="met-val" id="r-media">R$ 0/h</div></div>
+    <div class="met-card"><div class="met-dot" style="background:var(--red)"></div><div class="met-label">Abaixo da Meta</div><div class="met-val" id="r-below">0 de 0</div></div>
+  </div>
+  <div style="overflow-x:auto">
+    <table class="cli-table"><thead><tr><th>#</th><th>Cliente</th><th>Valor/Mês</th><th>H. Equipe</th><th>H. Sócio</th><th>Total H</th><th>Rentabilidade</th><th></th></tr></thead>
+    <tbody id="cli-tbody"><tr><td colspan="8" style="text-align:center;padding:30px;color:#aaa;font-size:13px">Nenhum cliente. Clique em "Adicionar cliente".</td></tr></tbody></table>
+  </div>
+  <div style="display:flex;gap:16px;margin-top:8px;font-size:12px;color:#888;padding:0 2px">
+    <span><span style="color:var(--green)">●</span> Acima de R$ 150/h — rentável</span>
+    <span><span style="color:var(--red)">●</span> Abaixo de R$ 150/h — revisar contrato</span>
+  </div>
+</div>
+
+<!-- AQUISIÇÃO -->
+<div class="page" id="page-aquisicao">
+  <div class="pg-title">Aquisição</div>
+  <div class="pg-sub">Estratégias para conquistar novos clientes</div>
+  <div class="acq-grid">
+    <div class="acq-card"><div class="acq-icon-prem"><svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="13" stroke="#d4a843" stroke-width="1.8"/><circle cx="18" cy="18" r="8" stroke="#d4a843" stroke-width="1.8"/><circle cx="18" cy="18" r="3" fill="#d4a843"/><path d="M18 3V7M18 29V33M3 18H7M29 18H33" stroke="#d4a843" stroke-width="2.2" stroke-linecap="round"/><path d="M26 10L22 14" stroke="#d4a843" stroke-width="1.8" stroke-linecap="round"/></svg></div><div class="acq-name">Prospecção Ativa</div><div class="acq-desc">Contato direto com negócios locais, clínicas, imobiliárias e prestadores de serviço em Ribeirão Preto.</div></div>
+    <div class="acq-card"><div class="acq-icon-prem"><svg viewBox="0 0 36 36" fill="none"><path d="M3 21l5.5-5.5H13l3-2.5h4l3 2.5h4.5L33 21" stroke="#d4a843" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 21v4L18 33l15-8v-4" stroke="#d4a843" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="11" cy="8.5" r="3" stroke="#d4a843" stroke-width="1.8"/><circle cx="25" cy="8.5" r="3" stroke="#d4a843" stroke-width="1.8"/></svg></div><div class="acq-name">Indicação de Clientes</div><div class="acq-desc">Programa de indicação: cliente que indica ganha desconto no próximo mês. Boca a boca qualificado.</div></div>
+    <div class="acq-card"><div class="acq-icon-prem"><svg viewBox="0 0 36 36" fill="none"><path d="M18 3C18 3 24 7 24 17H12C12 7 18 3 18 3Z" stroke="#d4a843" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 17L9 24H27L24 17" stroke="#d4a843" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18" cy="13" r="2.5" fill="#d4a843"/><path d="M15 24C15 24 14 28 18 30C22 28 21 24 21 24" stroke="#d4a843" stroke-width="1.8" stroke-linecap="round"/><path d="M12 19L8 21M24 19L28 21" stroke="#d4a843" stroke-width="1.6" stroke-linecap="round"/></svg></div><div class="acq-name">Conteúdo Orgânico</div><div class="acq-desc">Cases de sucesso, bastidores de campanhas e resultados reais para atrair novos clientes.</div></div>
+    <div class="acq-card"><div class="acq-icon-prem"><svg viewBox="0 0 36 36" fill="none"><rect x="4" y="20" width="5" height="12" rx="1.5" fill="#d4a843"/><rect x="12" y="14" width="5" height="18" rx="1.5" fill="#d4a843"/><rect x="20" y="8" width="5" height="24" rx="1.5" fill="#d4a843"/><path d="M28 10L32 6M32 6H28M32 6V10" stroke="#d4a843" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="3" y1="33" x2="33" y2="33" stroke="#d4a843" stroke-width="1.8" stroke-linecap="round"/></svg></div><div class="acq-name">Análise de Mercado</div><div class="acq-desc">Identifique nichos com maior potencial na sua região para focar seus esforços de prospecção.</div></div>
+    <div class="acq-card"><div class="acq-icon-prem"><svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="5" r="3.5" stroke="#d4a843" stroke-width="1.8"/><circle cx="6" cy="26" r="3.5" stroke="#d4a843" stroke-width="1.8"/><circle cx="30" cy="26" r="3.5" stroke="#d4a843" stroke-width="1.8"/><path d="M15 7L9 23M21 7L27 23M9.5 26H26.5" stroke="#d4a843" stroke-width="1.8" stroke-linecap="round"/><circle cx="18" cy="17" r="3" fill="#d4a843" opacity="0.6"/></svg></div><div class="acq-name">Networking</div><div class="acq-desc">Eventos locais, grupos de WhatsApp de empresários e comunidades de negócios em Ribeirão Preto.</div></div>
+    <div class="acq-card"><div class="acq-icon-prem"><svg viewBox="0 0 36 36" fill="none"><path d="M4 6H32L22 18V30L14 33V18L4 6Z" stroke="#d4a843" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><line x1="8" y1="11" x2="28" y2="11" stroke="#d4a843" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/><line x1="12" y1="16" x2="24" y2="16" stroke="#d4a843" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/></svg></div><div class="acq-name">Pipeline de Prospecção</div><div class="acq-desc">Gestão de funil de vendas — funcionalidade completa em desenvolvimento. Em breve!</div></div>
+  </div>
+</div>
+
+<!-- CALCULADORA -->
+<div class="page" id="page-calculadora">
+  <div class="pg-title">Calculadora de Pacotes</div>
+  <div class="pg-sub">Monte o pacote ideal para o seu cliente combinando planos escaláveis</div>
+  <div class="calc-step">
+    <div class="step-it on" id="stp1"><div class="step-c" id="stp1-c">1</div><span id="stp1-lbl">Meus serviços</span></div>
+    <div class="step-ln" id="stp-ln"></div>
+    <div class="step-it" id="stp2"><div class="step-c" id="stp2-c">2</div><span id="stp2-lbl" style="color:#aaa">Pacote do cliente</span></div>
+  </div>
+  <div id="calc-s1">
+    <div style="margin-bottom:14px"><div style="font-size:14px;font-weight:600">Configure seus serviços</div><div style="font-size:12.5px;color:#888;margin-top:3px">Selecione os planos que você oferece e defina seus preços</div></div>
+    <div class="calc-layout">
+      <div class="calc-l" id="calc-svcs"></div>
+      <div class="calc-r"><div class="sum-dark"><div class="sum-hdr">Resumo do Pacote</div><div id="s1-lines"></div><hr class="sum-div"><div class="disc-row"><span style="font-size:12px;color:#888">Desconto</span><div style="display:flex;align-items:center;gap:4px"><span style="font-size:11px;color:var(--red)">– R$</span><input class="disc-inp" type="number" id="s1-disc" value="0" min="0" oninput="updS1()"></div></div><div class="sum-total" id="s1-total">R$ 0</div><div class="sum-period">/mês</div><div class="ent-res" id="s1-ent"></div><button class="btn-gold" style="width:100%;margin-top:14px;padding:10px;justify-content:center" onclick="goS2()">Próximo: montar pacote do cliente →</button></div></div>
+    </div>
+  </div>
+  <div id="calc-s2" style="display:none">
+    <div style="display:flex;align-items:center;gap:7px;margin-bottom:14px;cursor:pointer;color:#888;font-size:13px" onclick="goS1()">← Editar meus serviços</div>
+    <div style="margin-bottom:14px"><div style="font-size:14px;font-weight:600">Monte o pacote do cliente</div><div style="font-size:12.5px;color:#888;margin-top:3px">Selecione os serviços que este cliente vai contratar</div></div>
+    <div class="calc-layout">
+      <div class="calc-l" id="calc-s2-svcs"></div>
+      <div class="calc-r"><div class="sum-dark"><div class="sum-hdr">Resumo do Pacote</div><div id="s2-lines"></div><hr class="sum-div"><div class="disc-row"><span style="font-size:12px;color:#888">Desconto</span><div style="display:flex;align-items:center;gap:4px"><span style="font-size:11px;color:var(--red)">– R$</span><input class="disc-inp" type="number" id="s2-disc" value="0" min="0" oninput="updS2()"></div></div><div class="sum-total" id="s2-total">R$ 0</div><div class="sum-period">/mês</div><div class="ent-res" id="s2-ent"></div><button class="btn-gold" style="width:100%;margin-top:14px;padding:10px;justify-content:center" onclick="dlProposal()">↓ Baixar proposta</button></div></div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<!-- MODAL: CLIENT -->
+<div class="modal-overlay" id="modal-client">
+  <div class="modal">
+    <div class="modal-hdr"><div class="modal-title" id="mc-title">Adicionar cliente</div><button class="modal-close" onclick="closeClientModal()">×</button></div>
+    <input type="hidden" id="mc-idx">
+    <div class="form-grp"><label class="form-lbl">Nome do cliente</label><input class="form-inp" id="mc-nome" type="text" placeholder="Ex: Studio M2"></div>
+    <div class="form-grp"><label class="form-lbl">Valor mensal (R$)</label><input class="form-inp" id="mc-valor" type="number" placeholder="3000"></div>
+    <div class="form-row">
+      <div class="form-grp"><label class="form-lbl">Horas equipe/mês</label><input class="form-inp" id="mc-heq" type="number" placeholder="0"></div>
+      <div class="form-grp"><label class="form-lbl">Horas sócio/mês</label><input class="form-inp" id="mc-hso" type="number" placeholder="20"></div>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+      <button class="btn-out" onclick="closeClientModal()">Cancelar</button>
+      <button class="btn-gold" onclick="saveClient()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: MATERIAL -->
+<div class="modal-overlay" id="modal-mat">
+  <div class="modal modal-lg">
+    <div class="modal-hdr">
+      <div>
+        <div class="modal-title" id="mm-title">Material</div>
+        <div style="font-size:12px;color:var(--ts);margin-top:2px" id="mm-subtitle"></div>
+      </div>
+      <button class="modal-close" onclick="closeMat()">×</button>
+    </div>
+    <div class="mat-tabs">
+      <button class="mat-tab active" id="mmtab-notes" onclick="switchMatTab('notes')">📝 Notas e Estratégias</button>
+      <button class="mat-tab" id="mmtab-checklist" onclick="switchMatTab('checklist')">✅ Checklist</button>
+      <button class="mat-tab" id="mmtab-video" onclick="switchMatTab('video')">▶ Vídeo</button>
+    </div>
+    <div id="mmt-notes">
+      <div style="font-size:12px;color:var(--ts);margin-bottom:6px">Anote estratégias, modelos de relatórios, templates e referências:</div>
+      <textarea class="mat-ta" id="mm-notes" placeholder="Escreva suas estratégias, checklists operacionais, modelos de relatórios, briefs de criativos..."></textarea>
+    </div>
+    <div id="mmt-checklist" style="display:none">
+      <div style="font-size:12px;color:var(--ts);margin-bottom:10px">Checklist operacional clicável — marque conforme executa:</div>
+      <div id="mm-ck-items"></div>
+      <div style="display:flex;gap:7px;margin-top:10px">
+        <input class="form-inp" id="mm-ck-new" type="text" placeholder="Adicionar item ao checklist..." onkeydown="if(event.key==='Enter')addMatCk()">
+        <button class="btn-gold" onclick="addMatCk()" style="padding:8px 14px">+</button>
+      </div>
+    </div>
+    <div id="mmt-video" style="display:none">
+      <div style="font-size:12px;color:var(--ts);margin-bottom:7px">Cole a URL do vídeo YouTube para esta aba de material:</div>
+      <input class="form-inp" id="mm-vid-url" type="text" placeholder="https://youtube.com/watch?v=... ou https://youtu.be/..." oninput="prevVid()">
+      <div id="mm-vid-prev" style="margin-top:10px"></div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px;padding-top:14px;border-top:1px solid var(--border)">
+      <div style="font-size:12px;color:var(--green)" id="mm-saved-msg"></div>
+      <div style="display:flex;gap:8px">
+        <button class="btn-out" onclick="closeMat()">Fechar</button>
+        <button class="btn-gold" onclick="saveMat()">Salvar material</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: YOUTUBE SETTINGS -->
+<div class="modal-overlay" id="modal-yt">
+  <div class="modal">
+    <div class="modal-hdr"><div class="modal-title">Configurar Canal YouTube</div><button class="modal-close" onclick="closeYT()">×</button></div>
+    <div style="font-size:13px;color:var(--ts);margin-bottom:16px">Configure seu canal para vincular às aulas dos planos. Você também pode adicionar vídeos específicos em cada plano.</div>
+    <div class="form-grp"><label class="form-lbl">Nome do canal</label><input class="form-inp" id="yt-name" type="text" placeholder="Ex: Ágios Growth"></div>
+    <div class="form-grp"><label class="form-lbl">URL do canal</label><input class="form-inp" id="yt-url" type="text" placeholder="https://youtube.com/@seucanal"></div>
+    <div class="form-grp"><label class="form-lbl">Vídeo padrão (aparece em todos os planos sem vídeo próprio)</label><input class="form-inp" id="yt-default" type="text" placeholder="https://youtube.com/watch?v=..."></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+      <button class="btn-out" onclick="closeYT()">Cancelar</button>
+      <button class="btn-gold" onclick="saveYT()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- hidden file input for import -->
+<input type="file" id="import-file" accept=".json" style="display:none" onchange="handleImport(this)">
+
+<script>
+// ======= PLAN DATA =======
+const PD = {
+  setup:{id:'setup',name:'Setup',group:'Setup',price:500,tag:'t-setup',tagN:'Setup',desc:'Configuração inicial completa da conta do cliente',tMin:500,tMax:500,dels:['Configuração inicial de contas e acessos','Instalação de pixels e tags de rastreamento','Configuração de conversões e metas','Auditoria e organização da conta','Briefing e alinhamento estratégico'],mats:[{t:'Estratégia',d:'Ações de tráfego pago, orgânico e ativos necessários do cliente.',c:'btn-gn'},{t:'Checklist de ação',d:'Operacional, criativos e rotinas — passo a passo completo para executar o plano.',c:'btn-bl'},{t:'Relatórios',d:'Métricas essenciais, planilha de controle e dashboard de resultados.',c:'btn-am'},{t:'Modelos de criativos',d:'Estrutura de briefing para enviar ao cliente e rotina de aprovação semanal.',c:'btn-pu'}]},
+  gsearch:{id:'gsearch',name:'Google Search',group:'Descoberta Google',price:2000,tag:'t-google',tagN:'Google',desc:'Crescimento com tráfego pago no Google Search',tMin:2000,tMax:2500,dels:['Gestão de campanhas Search','Configuração de conversões','Relatório mensal','Análise de palavras-chave','Otimização de Quality Score','Site básico'],mats:[{t:'Estratégia',d:'Ações de Google Search para alcançar clientes com alta intenção de compra.',c:'btn-gn'},{t:'Checklist de ação',d:'Operacional completo — passo a passo para executar o plano.',c:'btn-bl'},{t:'Campanhas',d:'Objetivo de campanha, configuração e estrutura dos criativos.',c:'btn-am'},{t:'Relatórios',d:'Métricas essenciais, planilha de controle e dashboard.',c:'btn-pu'},{t:'Objeções',d:'4 objeções frequentes com argumentos prontos para a venda.',c:'btn-gn'},{t:'Modelos de criativos',d:'Estrutura de briefing para enviar ao cliente.',c:'btn-bl'}]},
+  gmb:{id:'gmb',name:'Google Meu Negócio',group:'Descoberta Google',price:800,tag:'t-google',tagN:'Google',desc:'Otimização e gestão do perfil Google Meu Negócio',tMin:800,tMax:800,dels:['Otimização do perfil GMB','Gestão de avaliações','Posts semanais','Relatório de visibilidade local','Fotos e descrições otimizadas'],mats:[{t:'Estratégia',d:'Ações para dominar a busca local e aumentar visibilidade.',c:'btn-gn'},{t:'Checklist de ação',d:'Checklist completo de otimização de perfil GMB.',c:'btn-bl'},{t:'Relatórios',d:'Métricas de visibilidade local e evolução mensal.',c:'btn-am'},{t:'Modelos de criativos',d:'Modelo de posts semanais para o perfil.',c:'btn-pu'}]},
+  descoberta:{id:'descoberta',name:'Descoberta',group:'Descoberta Google',price:1500,tag:'t-google',tagN:'Google',desc:'Campanhas de descoberta Google para novos públicos',tMin:1500,tMax:2000,dels:['Campanhas Google Discovery','Segmentação por interesses','Criativos nativos','Relatório mensal','Otimização de CTR'],mats:[{t:'Estratégia',d:'Ações de Discovery para alcançar novos públicos no ecossistema Google.',c:'btn-gn'},{t:'Checklist de ação',d:'Passo a passo operacional do plano de Descoberta.',c:'btn-bl'},{t:'Campanhas',d:'Estrutura de campanha Discovery com segmentações recomendadas.',c:'btn-am'},{t:'Relatórios',d:'Dashboard e métricas de alcance e engajamento.',c:'btn-pu'}]},
+  seguidores:{id:'seguidores',name:'Seguidores',group:'Engajamento',price:1500,tag:'t-engaj',tagN:'Engajamento',desc:'Crescimento de seguidores com tráfego pago e orgânico',tMin:1500,tMax:3000,dels:['Gestão de campanhas de tráfego','Criação de públicos segmentados','Estratégia orgânica','Relatório mensal de crescimento','Biblioteca de criativos'],mats:[{t:'Estratégia',d:'Ações de tráfego pago, tráfego orgânico e ativos necessários do cliente.',c:'btn-gn'},{t:'Checklist de ação',d:'Operacional, criativos e rotinas — passo a passo completo para executar o plano.',c:'btn-bl'},{t:'Campanhas',d:'Objetivo de campanha, configuração no gerenciador e estrutura dos criativos.',c:'btn-am'},{t:'Relatórios',d:'Métricas essenciais, planilha de controle e dashboard de resultados.',c:'btn-pu'},{t:'Objeções',d:'4 objeções frequentes com argumentos prontos para responder na hora da venda.',c:'btn-gn'},{t:'Modelos de criativos',d:'Estrutura de briefing para enviar ao cliente e rotina de aprovação semanal.',c:'btn-bl'}]},
+  panfletagem:{id:'panfletagem',name:'Panfletagem',group:'Engajamento',price:1200,tag:'t-engaj',tagN:'Engajamento',desc:'Alcance local com campanhas de panfletagem digital',tMin:1200,tMax:2000,dels:['Campanhas de alcance local','Criativos para panfletagem digital','Segmentação geográfica','Relatório de impressões','Otimização de frequência'],mats:[{t:'Estratégia',d:'Ações para atingir o público local com alta frequência e baixo custo.',c:'btn-gn'},{t:'Checklist de ação',d:'Passo a passo operacional do plano de Panfletagem Digital.',c:'btn-bl'},{t:'Campanhas',d:'Estrutura de campanha de alcance com segmentação geográfica.',c:'btn-am'},{t:'Modelos de criativos',d:'Formatos e dimensões recomendados para panfletagem digital.',c:'btn-pu'}]},
+  youtube:{id:'youtube',name:'Inscritos YouTube',group:'Engajamento',price:1800,tag:'t-engaj',tagN:'Engajamento',desc:'Crescimento de inscritos e visualizações no YouTube',tMin:1800,tMax:3000,dels:['Campanhas de inscritos no YouTube','Criativos para vídeo','Análise de retenção','Relatório mensal','Estratégia de conteúdo'],mats:[{t:'Estratégia',d:'Ações de tráfego pago para crescimento de inscritos e views.',c:'btn-gn'},{t:'Checklist de ação',d:'Passo a passo operacional do plano YouTube.',c:'btn-bl'},{t:'Campanhas',d:'Estrutura de campanhas TrueView e Bumper Ads.',c:'btn-am'},{t:'Relatórios',d:'Métricas de crescimento, retenção e engajamento.',c:'btn-pu'}]},
+  lives:{id:'lives',name:'Lives e Webinars',group:'Engajamento',price:2000,tag:'t-engaj',tagN:'Engajamento',desc:'Divulgação e tráfego para lives e webinars',tMin:2000,tMax:3500,dels:['Campanhas de divulgação para evento','Remarketing pós-live','Criativos de contagem regressiva','Relatório de alcance e inscrições','Estratégia de repescagem'],mats:[{t:'Estratégia',d:'Ações para lotar lives e webinars com tráfego pago.',c:'btn-gn'},{t:'Checklist de ação',d:'Cronograma completo antes, durante e após o evento.',c:'btn-bl'},{t:'Campanhas',d:'Estrutura de campanhas por fase do evento.',c:'btn-am'},{t:'Modelos de criativos',d:'Formatos de criativos para cada etapa da divulgação.',c:'btn-pu'}]},
+  calendario:{id:'calendario',name:'Calendário Festivo',group:'Engajamento',price:1500,tag:'t-engaj',tagN:'Engajamento',desc:'Campanhas sazonais para datas comemorativas',tMin:1500,tMax:2500,dels:['Planejamento de datas do ano','Criativos sazonais','Campanhas por data comemorativa','Relatório de performance','Estratégia de reativação'],mats:[{t:'Estratégia',d:'Calendário de campanhas sazonais por nicho do cliente.',c:'btn-gn'},{t:'Checklist de ação',d:'Passo a passo para executar campanhas em datas especiais.',c:'btn-bl'},{t:'Campanhas',d:'Estrutura de campanhas por data comemorativa.',c:'btn-am'},{t:'Modelos de criativos',d:'Formatos e estilos de criativos para datas especiais.',c:'btn-pu'}]},
+  trafego:{id:'trafego',name:'Tráfego Direto',group:'Vendas',price:2000,tag:'t-vendas',tagN:'Vendas',desc:'Campanhas diretas de venda com Meta Ads',tMin:2000,tMax:3500,dels:['Gestão de campanhas Meta Ads','Criação de públicos segmentados','Relatório mensal de resultados','Otimização de criativos','Acompanhamento de métricas'],mats:[{t:'Estratégia',d:'Ações de tráfego direto para gerar vendas imediatas.',c:'btn-gn'},{t:'Checklist de ação',d:'Passo a passo operacional do plano de Tráfego Direto.',c:'btn-bl'},{t:'Campanhas',d:'Estrutura de campanhas de conversão no Meta Ads.',c:'btn-am'},{t:'Relatórios',d:'Métricas de ROAS, CPA e resultado por campanha.',c:'btn-pu'}]},
+  lowticket:{id:'lowticket',name:'Low Ticket',group:'Vendas',price:3000,tag:'t-vendas',tagN:'Vendas',desc:'Funil de vendas para produtos de baixo ticket',tMin:3000,tMax:5000,dels:['Estrutura de funil low ticket','Campanhas de conversão','Criativos para oferta principal','Relatório de ROAS','Otimização contínua'],mats:[{t:'Estratégia',d:'Funil completo para produtos de até R$197.',c:'btn-gn'},{t:'Checklist de ação',d:'Passo a passo do funil low ticket.',c:'btn-bl'},{t:'Campanhas',d:'Estrutura de campanhas ToFu, MoFu e BoFu.',c:'btn-am'},{t:'Relatórios',d:'Dashboard de ROAS e métricas de conversão.',c:'btn-pu'}]},
+  highticket:{id:'highticket',name:'High Ticket',group:'Vendas',price:4000,tag:'t-vendas',tagN:'Vendas',desc:'Estratégia de vendas para produtos de alto valor',tMin:4000,tMax:7000,dels:['Funil de vendas high ticket','Campanhas de qualificação','Landing page básica','Acompanhamento de leads','Relatório detalhado'],mats:[{t:'Estratégia',d:'Funil completo para produtos acima de R$2.000.',c:'btn-gn'},{t:'Checklist de ação',d:'Passo a passo do funil high ticket com qualificação.',c:'btn-bl'},{t:'Campanhas',d:'Estrutura de campanhas de CPL e conversão high ticket.',c:'btn-am'},{t:'Relatórios',d:'Métricas de qualificação, CPL e taxa de fechamento.',c:'btn-pu'}]},
+  perpetuo:{id:'perpetuo',name:'Perpétuo',group:'Vendas',price:3500,tag:'t-vendas',tagN:'Vendas',desc:'Estrutura de vendas perpétua e automatizada',tMin:3500,tMax:5000,dels:['Funil perpétuo automatizado','Campanhas de topo de funil','Remarketing inteligente','Sequência de e-mails','Relatório mensal'],mats:[{t:'Estratégia',d:'Sistema de vendas perpétuo que funciona 24h por dia.',c:'btn-gn'},{t:'Checklist de ação',d:'Configuração completa do funil perpétuo.',c:'btn-bl'},{t:'Campanhas',d:'Estrutura de campanhas para funil perpétuo.',c:'btn-am'},{t:'Relatórios',d:'Métricas de funil perpétuo e automação.',c:'btn-pu'}]},
+  lancamento:{id:'lancamento',name:'Lançamentos',group:'Vendas',price:5000,tag:'t-vendas',tagN:'Vendas',desc:'Estrutura completa de lançamento de infoprodutos',tMin:5000,tMax:10000,dels:['Estrutura completa de lançamento','Campanhas de CPL e vendas','Criativos para cada fase','Relatório de resultados','Pós-lançamento e perpétuo'],mats:[{t:'Estratégia',d:'Estrutura completa de lançamento: pré, lançamento e pós.',c:'btn-gn'},{t:'Checklist de ação',d:'Cronograma de lançamento com todas as etapas.',c:'btn-bl'},{t:'Campanhas',d:'Campanhas por fase: aquecimento, CPL, vendas.',c:'btn-am'},{t:'Relatórios',d:'Dashboard de resultados do lançamento.',c:'btn-pu'}]},
+  meteorico:{id:'meteorico',name:'Meteórico',group:'Vendas',price:4500,tag:'t-vendas',tagN:'Vendas',desc:'Crescimento acelerado e estruturado de resultados',tMin:4500,tMax:8000,dels:['Diagnóstico completo da conta','Reestruturação de campanhas','Escala agressiva de budget','Acompanhamento semanal','Relatório de evolução'],mats:[{t:'Estratégia',d:'Plano de crescimento acelerado para contas com potencial.',c:'btn-gn'},{t:'Checklist de ação',d:'Checklist de diagnóstico e reestruturação de conta.',c:'btn-bl'},{t:'Campanhas',d:'Estratégia de escala com controle de ROAS.',c:'btn-am'},{t:'Relatórios',d:'Relatório semanal de evolução e resultados.',c:'btn-pu'}]},
+  ecommerce:{id:'ecommerce',name:'E-commerce',group:'Vendas',price:4000,tag:'t-vendas',tagN:'Vendas',desc:'Campanhas completas para lojas virtuais',tMin:4000,tMax:7000,dels:['Catálogo de produtos configurado','Campanhas de remarketing dinâmico','Campanhas de prospecção','Gestão de budget','Relatório de ROAS por produto'],mats:[{t:'Estratégia',d:'Estrutura completa de tráfego para e-commerce.',c:'btn-gn'},{t:'Checklist de ação',d:'Configuração de catálogo, pixel e campanhas.',c:'btn-bl'},{t:'Campanhas',d:'Estrutura: prospecção, remarketing e retenção.',c:'btn-am'},{t:'Relatórios',d:'ROAS por produto, categoria e campanha.',c:'btn-pu'}]},
+  funis:{id:'funis',name:'Funis',group:'Vendas',price:3000,tag:'t-vendas',tagN:'Vendas',desc:'Construção e gestão de funis de marketing completos',tMin:3000,tMax:5000,dels:['Mapeamento do funil','Configuração de cada etapa','Campanhas por fase do funil','Remarketing segmentado','Relatório de conversão por etapa'],mats:[{t:'Estratégia',d:'Arquitetura de funil personalizada para o nicho do cliente.',c:'btn-gn'},{t:'Checklist de ação',d:'Passo a passo de construção e configuração do funil.',c:'btn-bl'},{t:'Campanhas',d:'Campanhas por etapa do funil (ToFu, MoFu, BoFu).',c:'btn-am'},{t:'Relatórios',d:'Taxa de conversão por etapa e custo por lead qualificado.',c:'btn-pu'}]},
+  leadsmeta:{id:'leadsmeta',name:'Leads Meta',group:'Leads',price:2000,tag:'t-leads',tagN:'Leads',desc:'Geração de leads qualificados pelo Meta Ads',tMin:2000,tMax:3500,dels:['Campanhas de geração de leads','Formulários nativos otimizados','Segmentação por interesse','Relatório de CPL','Qualificação de leads'],mats:[{t:'Estratégia',d:'Ações para capturar leads qualificados via Meta Ads.',c:'btn-gn'},{t:'Checklist de ação',d:'Passo a passo de configuração de campanha de leads.',c:'btn-bl'},{t:'Campanhas',d:'Estrutura de campanha com formulário nativo otimizado.',c:'btn-am'},{t:'Relatórios',d:'CPL, volume de leads e taxa de qualificação.',c:'btn-pu'}]},
+  leadsgoogle:{id:'leadsgoogle',name:'Leads Google',group:'Leads',price:2500,tag:'t-leads',tagN:'Leads',desc:'Captação de leads com alta intenção pelo Google',tMin:2500,tMax:4000,dels:['Campanhas Search para leads','Extensões de formulário','Rastreamento de conversões','Análise de palavras-chave','Relatório mensal'],mats:[{t:'Estratégia',d:'Ações de Google Search para captar leads com intenção de compra.',c:'btn-gn'},{t:'Checklist de ação',d:'Configuração completa de campanha de leads no Google.',c:'btn-bl'},{t:'Campanhas',d:'Estrutura de campanha Search com extensões de formulário.',c:'btn-am'},{t:'Relatórios',d:'CPL, impressões, CTR e conversões.',c:'btn-pu'}]},
+  whatsapp:{id:'whatsapp',name:'WhatsApp Ads',group:'Leads',price:1500,tag:'t-leads',tagN:'Leads',desc:'Campanhas diretas para conversa no WhatsApp',tMin:1500,tMax:2500,dels:['Campanhas Click to WhatsApp','Criativos para WhatsApp','Segmentação de público','Relatório de conversas','Otimização de CTR'],mats:[{t:'Estratégia',d:'Ações para gerar conversas qualificadas no WhatsApp.',c:'btn-gn'},{t:'Checklist de ação',d:'Configuração de campanha Click to WhatsApp.',c:'btn-bl'},{t:'Campanhas',d:'Estrutura de criativos e público para WhatsApp Ads.',c:'btn-am'},{t:'Relatórios',d:'Custo por conversa, CTR e volume de mensagens.',c:'btn-pu'}]},
+  trackeamento:{id:'trackeamento',name:'Gestão e Trackeamento',group:'Serviços',price:2500,tag:'t-serv',tagN:'Serviços',desc:'Configuração completa de rastreamento e dados',tMin:2500,tMax:3500,dels:['Instalação do Meta Pixel','Configuração do Google Tag Manager','Eventos de conversão','Dashboard de dados','Relatório mensal'],mats:[{t:'Estratégia',d:'Arquitetura de dados para rastrear todo o funil.',c:'btn-gn'},{t:'Checklist de ação',d:'Checklist de instalação de pixel e GTM.',c:'btn-bl'},{t:'Relatórios',d:'Dashboard de eventos e funil de conversão.',c:'btn-am'},{t:'Modelos de criativos',d:'Documentação de tags e eventos configurados.',c:'btn-pu'}]},
+  followup:{id:'followup',name:'Follow-up de Vendas',group:'Serviços',price:2000,tag:'t-serv',tagN:'Serviços',desc:'Automação de follow-up para fechar mais vendas',tMin:2000,tMax:3000,dels:['Sequência de follow-up','Automação via WhatsApp','Scripts de abordagem','Relatório de conversões','Treinamento da equipe'],mats:[{t:'Estratégia',d:'Sistema de follow-up para reativar leads e fechar vendas.',c:'btn-gn'},{t:'Checklist de ação',d:'Configuração da sequência de follow-up.',c:'btn-bl'},{t:'Relatórios',d:'Taxa de conversão do follow-up e vendas fechadas.',c:'btn-am'},{t:'Modelos de criativos',d:'Scripts prontos de abordagem e argumentação.',c:'btn-pu'}]},
+  plataformas:{id:'plataformas',name:'Config. Plataformas',group:'Serviços',price:1500,tag:'t-serv',tagN:'Serviços',desc:'Configuração e integração de plataformas digitais',tMin:1500,tMax:2000,dels:['Configuração de contas','Integrações entre plataformas','Documentação de acessos','Teste de funcionamento','Suporte inicial'],mats:[{t:'Estratégia',d:'Configuração e integração das plataformas do cliente.',c:'btn-gn'},{t:'Checklist de ação',d:'Checklist de configuração por plataforma.',c:'btn-bl'},{t:'Relatórios',d:'Documentação de acessos e integrações realizadas.',c:'btn-am'},{t:'Modelos de criativos',d:'Modelo de entrega e relatório de configuração.',c:'btn-pu'}]},
+  criativos:{id:'criativos',name:'Pacote de Criativos',group:'Serviços',price:2000,tag:'t-serv',tagN:'Serviços',desc:'Produção de criativos para campanhas pagas',tMin:2000,tMax:3500,dels:['Briefing criativo','Roteiros de vídeo','Artes estáticas','Revisões incluídas','Entrega em formatos variados'],mats:[{t:'Estratégia',d:'Estratégia criativa alinhada ao funil do cliente.',c:'btn-gn'},{t:'Checklist de ação',d:'Fluxo de aprovação e entrega de criativos.',c:'btn-bl'},{t:'Relatórios',d:'Performance dos criativos: CTR, CPM e relevância.',c:'btn-am'},{t:'Modelos de criativos',d:'Templates de briefing para solicitar ao cliente.',c:'btn-pu'}]},
+  sites:{id:'sites',name:'Criação de Sites',group:'Serviços',price:1200,tag:'t-serv',tagN:'Serviços',desc:'Desenvolvimento de sites otimizados para conversão',tMin:1200,tMax:3000,dels:['Site responsivo','Até 5 páginas','Integração com pixel','Formulário de contato','Hospedagem básica'],mats:[{t:'Estratégia',d:'Site focado em conversão integrado às campanhas.',c:'btn-gn'},{t:'Checklist de ação',d:'Checklist de desenvolvimento e entrega do site.',c:'btn-bl'},{t:'Relatórios',d:'Métricas de tráfego, conversão e velocidade do site.',c:'btn-am'},{t:'Modelos de criativos',d:'Briefing de identidade visual e conteúdo do site.',c:'btn-pu'}]},
+};
+
+// ======= STATE =======
+let plans={}, clients=[], s1={}, s2={}, calcDel={};
+let matCur={pid:null,idx:null,tab:'notes'}, matBuf={};
+
+// ======= STORAGE =======
+const SK={plans:'agios_plans_v3',clients:'agios_clients_v2',yt:'agios_yt_v1'};
+function ss(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+function sg(k,fb){try{const d=localStorage.getItem(k);return d?JSON.parse(d):fb;}catch(e){return fb;}}
+function saveAll(){ss(SK.plans,plans);ss(SK.clients,clients);}
+function getMat(pid,idx){return sg('agios_mat_'+pid+'_'+idx,{notes:'',checklist:[],videoUrl:''});}
+function setMat(pid,idx,d){try{localStorage.setItem('agios_mat_'+pid+'_'+idx,JSON.stringify(d));}catch(e){}}
+function hasMat(pid,idx){const d=getMat(pid,idx);return d.notes||d.checklist.length||d.videoUrl;}
+
+function initPlans(){
+  plans={};
+  Object.keys(PD).forEach(k=>{
+    plans[k]={...PD[k],dels:[...PD[k].dels],delActive:PD[k].dels.map(()=>true),videoUrl:'',mats:[...PD[k].mats]};
+  });
+}
+
+function loadAll(){
+  const saved=sg(SK.plans,null);
+  if(saved&&Object.keys(saved).length>0){
+    plans=saved;
+    // ensure new plans are added
+    Object.keys(PD).forEach(k=>{
+      if(!plans[k]) plans[k]={...PD[k],dels:[...PD[k].dels],delActive:PD[k].dels.map(()=>true),videoUrl:'',mats:[...PD[k].mats]};
+      if(!plans[k].delActive) plans[k].delActive=plans[k].dels.map(()=>true);
+      if(!plans[k].videoUrl) plans[k].videoUrl='';
+    });
+  } else {initPlans();}
+  clients=sg(SK.clients,[]);
+}
+
+// ======= NAVIGATION =======
+function go(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.sb-item,.sb-sub').forEach(i=>i.classList.remove('active'));
+  const el=document.getElementById('page-'+page);
+  if(!el)return;
+  el.classList.add('active');
+  if(page.startsWith('plano-'))renderPlan(page.replace('plano-',''));
+  if(page==='calculadora')renderCalc();
+  if(page==='rentabilidade')renderClients();
+  if(page==='dashboard')updDash();
+  // highlight
+  document.querySelectorAll('.sb-item,.sb-sub').forEach(el=>{
+    const oc=el.getAttribute('onclick')||'';
+    if(oc.includes("'"+page+"'"))el.classList.add('active');
+  });
+}
+
+function toggleSub(id){
+  const el=document.getElementById(id);if(!el)return;
+  const open=el.style.display!=='none';el.style.display=open?'none':'block';
+  const key=id.replace('sub-','arr-');
+  const arr=document.getElementById(key);if(arr)arr.textContent=open?'›':'⌄';
+}
+
+// ======= YOUTUBE HELPERS =======
+function getYTId(url){if(!url)return null;const m=url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);return m?m[1]:null;}
+function ytEmbed(id,h){return `<iframe src="https://www.youtube.com/embed/${id}" width="100%" height="${h||180}" frameborder="0" allowfullscreen style="border-radius:8px;margin-top:8px"></iframe>`;}
+function getYTCfg(){return sg(SK.yt,{name:'',url:'',defaultVid:''});}
+
+// ======= PLAN PAGES =======
+function renderPlan(key){
+  const p=plans[key];const el=document.getElementById('page-plano-'+key);
+  if(!el||!p)return;
+  const yt=getYTCfg();
+  const vidUrl=p.videoUrl||yt.defaultVid||'';
+  const ytId=getYTId(vidUrl);
+  el.innerHTML=`
+    <div style="margin-bottom:20px">
+      <span class="tag ${p.tag}">${p.tagN}</span>
+      <div class="pg-title">${p.name}</div>
+      <div class="pg-sub">${p.desc}</div>
+    </div>
+    <div class="plan-layout">
+      <div>
+        <div class="ticket-card">
+          <div class="tick-label">Ticket Sugerido</div>
+          <div class="tick-val">R$ ${p.price.toLocaleString('pt-BR')}</div>
+          <div class="tick-period">até R$ ${p.tMax.toLocaleString('pt-BR')} / mês</div>
+          <div class="del-list" style="margin-top:14px">
+            <div style="font-size:9.5px;color:#666;text-transform:uppercase;letter-spacing:1px;margin-bottom:7px">Entregáveis — clique para ativar/desativar</div>
+            ${p.dels.map((d,i)=>`
+            <div class="del-row" onclick="togglePlanDel('${key}',${i})">
+              <div class="del-check-box ${(p.delActive&&p.delActive[i]!==false)?'on':''}"></div>
+              <span class="del-text ${(p.delActive&&p.delActive[i]===false)?'off':''}">${d}</span>
+            </div>`).join('')}
+          </div>
+          <div class="add-del-row" style="margin-top:10px">
+            <input class="add-del-inp" id="nd-${key}" placeholder="Adicionar entregável..." style="background:#1a1a1a;border-color:#333;color:#fff" onkeydown="if(event.key==='Enter')addDel('${key}')">
+            <button class="add-del-btn" onclick="addDel('${key}')">+</button>
+          </div>
+        </div>
+        <div class="aula-box">
+          <div class="aula-label">Aula Principal</div>
+          ${ytId?ytEmbed(ytId,160):''}
+          <div style="display:flex;gap:6px;margin-top:${ytId?'8px':'0'}">
+            <input type="text" value="${vidUrl}" id="yt-${key}" placeholder="URL do vídeo YouTube..." style="flex:1;border:1px solid #ddd;border-radius:5px;padding:6px 9px;font-size:12px">
+            <button class="btn-gold" onclick="savePlanVid('${key}')" style="padding:6px 12px;font-size:12px">Salvar</button>
+          </div>
+          ${yt.url?`<a href="${yt.url}" target="_blank" style="font-size:11px;color:#aaa;display:block;margin-top:5px">Ir para o canal ${yt.name||''} →</a>`:''}
+        </div>
+      </div>
+      <div class="mat-grid">
+        ${p.mats.map((m,i)=>`
+        <div class="mat-card">
+          <div class="mat-card-hdr">
+            <div class="mat-title">${m.t}</div>
+            <span class="badge-ok">Disponível</span>
+          </div>
+          <div class="mat-desc">${m.d}</div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <button class="btn-matview ${m.c}" onclick="openMat('${key}',${i})">Ver material</button>
+            ${hasMat(key,i)?'<span style="font-size:11px;color:var(--green)">● salvo</span>':''}
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+function togglePlanDel(key,idx){
+  if(!plans[key].delActive)plans[key].delActive=plans[key].dels.map(()=>true);
+  plans[key].delActive[idx]=plans[key].delActive[idx]===false?true:false;
+  saveAll();renderPlan(key);
+}
+function addDel(key){
+  const inp=document.getElementById('nd-'+key);
+  if(!inp||!inp.value.trim())return;
+  plans[key].dels.push(inp.value.trim());
+  plans[key].delActive.push(true);
+  inp.value='';saveAll();renderPlan(key);
+}
+function savePlanVid(key){
+  plans[key].videoUrl=document.getElementById('yt-'+key)?.value.trim()||'';
+  saveAll();renderPlan(key);toast('Vídeo salvo!');
+}
+
+// ======= MATERIAL MODAL =======
+function openMat(pid,idx){
+  matCur={pid,idx,tab:'notes'};
+  const p=plans[pid];const m=p.mats[idx];
+  matBuf=JSON.parse(JSON.stringify(getMat(pid,idx)));
+  document.getElementById('mm-title').textContent=m.t;
+  document.getElementById('mm-subtitle').textContent=p.name+' — '+p.tagN;
+  document.getElementById('mm-notes').value=matBuf.notes||'';
+  document.getElementById('mm-vid-url').value=matBuf.videoUrl||'';
+  document.getElementById('mm-vid-prev').innerHTML='';
+  if(matBuf.videoUrl)prevVid();
+  renderMatCk();
+  switchMatTab('notes');
+  document.getElementById('mm-saved-msg').textContent='';
+  document.getElementById('modal-mat').classList.add('open');
+}
+function closeMat(){document.getElementById('modal-mat').classList.remove('open');}
+function switchMatTab(t){
+  matCur.tab=t;
+  ['notes','checklist','video'].forEach(x=>{
+    document.getElementById('mmt-'+x).style.display=x===t?'block':'none';
+    document.getElementById('mmtab-'+x).classList.toggle('active',x===t);
+  });
+}
+function renderMatCk(){
+  const items=matBuf.checklist||[];
+  const el=document.getElementById('mm-ck-items');
+  el.innerHTML=items.length?items.map((it,i)=>`
+    <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5">
+      <div class="del-ex-chk ${it.done?'on':''}" onclick="togMatCk(${i})" style="cursor:pointer;width:17px;height:17px"></div>
+      <span style="flex:1;font-size:13px;${it.done?'text-decoration:line-through;color:#bbb':''}">${it.text}</span>
+      <button onclick="delMatCk(${i})" style="background:none;border:none;cursor:pointer;color:#ddd;font-size:18px;line-height:1">×</button>
+    </div>`).join(''):'<div style="color:#bbb;font-size:13px;padding:16px 0;text-align:center">Nenhum item. Adicione abaixo.</div>';
+}
+function togMatCk(i){matBuf.checklist[i].done=!matBuf.checklist[i].done;renderMatCk();}
+function delMatCk(i){matBuf.checklist.splice(i,1);renderMatCk();}
+function addMatCk(){
+  const inp=document.getElementById('mm-ck-new');
+  if(!inp.value.trim())return;
+  matBuf.checklist.push({text:inp.value.trim(),done:false});
+  inp.value='';renderMatCk();
+}
+function prevVid(){
+  const url=document.getElementById('mm-vid-url').value;
+  const id=getYTId(url);
+  const el=document.getElementById('mm-vid-prev');
+  el.innerHTML=id?ytEmbed(id,200):url?'<div style="color:#e05252;font-size:12px;margin-top:6px">URL inválida. Use: youtube.com/watch?v=... ou youtu.be/...</div>':'';
+}
+function saveMat(){
+  matBuf.notes=document.getElementById('mm-notes').value;
+  matBuf.videoUrl=document.getElementById('mm-vid-url').value;
+  setMat(matCur.pid,matCur.idx,matBuf);
+  document.getElementById('mm-saved-msg').textContent='✓ Material salvo com sucesso!';
+  toast('Material salvo!');
+  // refresh plan page if visible
+  renderPlan(matCur.pid);
+}
+
+// ======= YOUTUBE SETTINGS =======
+function openYT(){const c=getYTCfg();document.getElementById('yt-name').value=c.name||'';document.getElementById('yt-url').value=c.url||'';document.getElementById('yt-default').value=c.defaultVid||'';document.getElementById('modal-yt').classList.add('open');}
+function closeYT(){document.getElementById('modal-yt').classList.remove('open');}
+function saveYT(){ss(SK.yt,{name:document.getElementById('yt-name').value.trim(),url:document.getElementById('yt-url').value.trim(),defaultVid:document.getElementById('yt-default').value.trim()});closeYT();toast('Canal YouTube salvo!');}
+
+// ======= CALCULADORA =======
+function renderCalc(){
+  const groups={};
+  Object.values(plans).forEach(p=>{if(!groups[p.group])groups[p.group]=[];groups[p.group].push(p);});
+  const el=document.getElementById('calc-svcs');if(!el)return;
+  el.innerHTML=Object.entries(groups).map(([grp,items])=>`
+    <div class="svc-group-lbl">${grp}</div>
+    ${items.map(p=>`
+    <div>
+      <div class="svc-row ${s1[p.id]?'sel':''}" onclick="togS1('${p.id}')">
+        <div class="svc-chk ${s1[p.id]?'on':''}"></div>
+        <span class="svc-name">${p.name}</span>
+        <div style="display:flex;align-items:center;gap:5px">
+          <span style="font-size:12px;color:#999">R$</span>
+          <input class="price-inp" type="number" value="${p.price}" onclick="event.stopPropagation()" onchange="updPrice('${p.id}',this.value)">
+        </div>
+      </div>
+      ${s1[p.id]?`
+      <div class="del-expand">
+        <div style="font-size:9.5px;color:#999;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Entregáveis — clique para incluir/excluir da proposta</div>
+        ${p.dels.map((d,i)=>`
+        <div class="del-ex-row" onclick="togCalcDel('${p.id}',${i})">
+          <div class="del-ex-chk ${getCalcDel(p.id,i)?'on':''}"></div>
+          <span style="font-size:12.5px;color:${getCalcDel(p.id,i)?'#444':'#aaa'};${getCalcDel(p.id,i)?'':'text-decoration:line-through'}">${d}</span>
+        </div>`).join('')}
+        <div class="add-del-row">
+          <input class="add-del-inp" id="cd-${p.id}" placeholder="Adicionar entregável..." onkeydown="if(event.key==='Enter')addCalcDel('${p.id}')">
+          <button class="add-del-btn" onclick="addCalcDel('${p.id}')">+</button>
+        </div>
+      </div>`:''}
+    </div>`).join('')}
+  `).join('');
+  updS1();
+}
+
+function getCalcDel(pid,i){const k=pid+'_'+i;return k in calcDel?calcDel[k]:true;}
+function togCalcDel(pid,i){const k=pid+'_'+i;calcDel[k]=!getCalcDel(pid,i);renderCalc();}
+function togS1(id){
+  s1[id]=!s1[id];
+  if(s1[id]){plans[id].dels.forEach((_,i)=>{const k=id+'_'+i;if(!(k in calcDel))calcDel[k]=true;});}
+  renderCalc();
+}
+function updPrice(id,v){if(plans[id]){plans[id].price=parseInt(v)||0;saveAll();updS1();}}
+function addCalcDel(id){const inp=document.getElementById('cd-'+id);if(!inp||!inp.value.trim())return;plans[id].dels.push(inp.value.trim());calcDel[id+'_'+(plans[id].dels.length-1)]=true;inp.value='';saveAll();renderCalc();}
+
+function getSelDels(pid){return plans[pid].dels.filter((_,i)=>getCalcDel(pid,i));}
+
+function updS1(){
+  const sel=Object.values(plans).filter(p=>s1[p.id]);
+  const disc=parseInt(document.getElementById('s1-disc')?.value)||0;
+  const sub=sel.reduce((s,p)=>s+p.price,0);
+  const tot=Math.max(0,sub-disc);
+  const lEl=document.getElementById('s1-lines');if(lEl)lEl.innerHTML=sel.map(p=>`<div class="sum-line"><span>${p.name}</span><span>R$ ${p.price.toLocaleString('pt-BR')}</span></div>`).join('');
+  const tEl=document.getElementById('s1-total');if(tEl)tEl.textContent='R$ '+tot.toLocaleString('pt-BR');
+  const eEl=document.getElementById('s1-ent');
+  if(eEl)eEl.innerHTML=sel.length?`<div style="font-size:9px;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:7px">Entregáveis inclusos</div>`+sel.map(p=>{const ds=getSelDels(p.id);return ds.length?`<div class="ent-gt">${p.name}</div>${ds.map(d=>`<div class="ent-it"><span style="color:var(--green);font-size:12px;flex-shrink:0">✓</span>${d}</div>`).join('')}`:''}).join(''):'';
+}
+
+function goS2(){
+  const sel=Object.values(plans).filter(p=>s1[p.id]);
+  if(!sel.length){alert('Selecione ao menos um serviço.');return;}
+  s2={};sel.forEach(p=>s2[p.id]=true);
+  document.getElementById('calc-s1').style.display='none';
+  document.getElementById('calc-s2').style.display='block';
+  document.getElementById('stp1-c').innerHTML='✓';document.getElementById('stp1-c').style.cssText='width:26px;height:26px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0';
+  document.getElementById('stp-ln').classList.add('done');
+  document.getElementById('stp2-c').style.cssText='width:26px;height:26px;border-radius:50%;background:var(--gold);color:#111;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0';
+  document.getElementById('stp2-lbl').style.color='var(--tp)';
+  renderS2();
+}
+function goS1(){
+  document.getElementById('calc-s1').style.display='block';document.getElementById('calc-s2').style.display='none';
+  document.getElementById('stp1-c').textContent='1';document.getElementById('stp1-c').style.cssText='width:26px;height:26px;border-radius:50%;background:var(--gold);color:#111;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0';
+  document.getElementById('stp-ln').classList.remove('done');document.getElementById('stp2-c').style.cssText='width:26px;height:26px;border-radius:50%;background:#e5e5e5;color:#aaa;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0';
+  document.getElementById('stp2-lbl').style.color='#aaa';
+}
+function renderS2(){
+  const sel=Object.values(plans).filter(p=>s1[p.id]);
+  const groups={};sel.forEach(p=>{if(!groups[p.group])groups[p.group]=[];groups[p.group].push(p);});
+  const el=document.getElementById('calc-s2-svcs');if(!el)return;
+  el.innerHTML=Object.entries(groups).map(([grp,items])=>`
+    <div class="svc-group-lbl">${grp}</div>
+    ${items.map(p=>`
+    <div class="svc-row ${s2[p.id]?'sel':''}" onclick="togS2('${p.id}')">
+      <div class="svc-chk ${s2[p.id]?'on':''}"></div>
+      <span class="svc-name">${p.name}</span>
+      <span style="font-size:13.5px;font-weight:500;color:#888">${p.price>0?'R$ '+p.price.toLocaleString('pt-BR'):'Personalizado'}</span>
+    </div>`).join('')}
+  `).join('');
+  updS2();
+}
+function togS2(id){s2[id]=!s2[id];renderS2();}
+function updS2(){
+  const sel=Object.values(plans).filter(p=>s2[p.id]);
+  const disc=parseInt(document.getElementById('s2-disc')?.value)||0;
+  const sub=sel.reduce((s,p)=>s+p.price,0);
+  const tot=Math.max(0,sub-disc);
+  const lEl=document.getElementById('s2-lines');if(lEl)lEl.innerHTML=sel.map(p=>`<div class="sum-line"><span>${p.name}</span><span>R$ ${p.price.toLocaleString('pt-BR')}</span></div>`).join('');
+  const tEl=document.getElementById('s2-total');if(tEl)tEl.textContent='R$ '+tot.toLocaleString('pt-BR');
+  const eEl=document.getElementById('s2-ent');
+  if(eEl)eEl.innerHTML=sel.length?`<div style="font-size:9px;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:7px">Entregáveis inclusos</div>`+sel.map(p=>{const ds=getSelDels(p.id);return ds.length?`<div class="ent-gt">${p.name}</div>${ds.map(d=>`<div class="ent-it"><span style="color:var(--green);font-size:12px;flex-shrink:0">✓</span>${d}</div>`).join('')}`:''}).join(''):'';
+}
+
+function dlProposal(){
+  const sel=Object.values(plans).filter(p=>s2[p.id]);
+  const disc=parseInt(document.getElementById('s2-disc')?.value)||0;
+  const tot=Math.max(0,sel.reduce((s,p)=>s+p.price,0)-disc);
+  const yt=getYTCfg();
+  let txt=`PROPOSTA COMERCIAL — ÁGIOS GROWTH\n`;
+  txt+=`Data: ${new Date().toLocaleDateString('pt-BR')}\n${'─'.repeat(45)}\n\n`;
+  sel.forEach(p=>{
+    txt+=`${p.name.toUpperCase()} — R$ ${p.price.toLocaleString('pt-BR')}/mês\n`;
+    txt+='Entregáveis:\n';
+    getSelDels(p.id).forEach(d=>txt+=`  • ${d}\n`);
+    txt+='\n';
+  });
+  txt+=`${'─'.repeat(45)}\n`;
+  if(disc>0)txt+=`Desconto: – R$ ${disc.toLocaleString('pt-BR')}\n`;
+  txt+=`TOTAL MENSAL: R$ ${tot.toLocaleString('pt-BR')}\n\nContato: Toni — Ágios Growth\n`;
+  if(yt.url)txt+=`Canal: ${yt.url}\n`;
+  const b=new Blob([txt],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='proposta-agios-growth.txt';a.click();
+}
+
+// ======= RENTABILIDADE =======
+function renderClients(){
+  const tb=document.getElementById('cli-tbody');if(!tb)return;
+  if(!clients.length){tb.innerHTML='<tr><td colspan="8" style="text-align:center;padding:30px;color:#aaa;font-size:13px">Nenhum cliente. Clique em "Adicionar cliente".</td></tr>';updMetrics();return;}
+  tb.innerHTML=clients.map((c,i)=>{
+    const th=c.hEquipe+c.hSocio,rent=th>0?c.valor/th:null,ok=rent!==null&&rent>=150;
+    return `<tr><td style="color:#aaa">${i+1}</td><td style="font-weight:600">${c.nome}</td><td>R$ ${c.valor.toLocaleString('pt-BR')}</td><td>${c.hEquipe}h</td><td>${c.hSocio}h</td><td>${th}h</td><td>${rent!==null?`<span class="${ok?'rent-ok':'rent-low'}">R$ ${Math.round(rent)}/h</span><span class="${ok?'bk-ok':'bk-low'}">${ok?'OK':'Baixa'}</span>`:'—'}</td><td style="white-space:nowrap"><button class="act-btn" onclick="openClientModal('edit',${i})">✏️</button><button class="act-btn" onclick="delClient(${i})">🗑</button></td></tr>`;
+  }).join('');
+  updMetrics();
+}
+function updMetrics(){
+  const total=clients.length,rec=clients.reduce((s,c)=>s+c.valor,0);
+  const valid=clients.filter(c=>c.hEquipe+c.hSocio>0);
+  const rents=valid.map(c=>c.valor/(c.hEquipe+c.hSocio));
+  const avg=rents.length?Math.round(rents.reduce((a,b)=>a+b,0)/rents.length):0;
+  const below=valid.filter(c=>c.valor/(c.hEquipe+c.hSocio)<150).length;
+  const st=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+  st('r-total',total);st('r-receita','R$ '+rec.toLocaleString('pt-BR'));st('r-media','R$ '+avg+'/h');st('r-below',below+' de '+total);
+  updDash();
+}
+
+// ======= DASHBOARD =======
+function updDash(){
+  const fat=clients.reduce((s,c)=>s+c.valor,0),cli=clients.length;
+  const ticket=cli>0?Math.round(fat/cli):0;
+  const valid=clients.filter(c=>c.hEquipe+c.hSocio>0);
+  const below=valid.filter(c=>c.valor/(c.hEquipe+c.hSocio)<150).length;
+  const st=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+  st('d-fat','R$ '+fat.toLocaleString('pt-BR'));st('d-cli',cli);st('d-ticket','R$ '+ticket.toLocaleString('pt-BR'));st('d-below',below);
+  // journey
+  const lvls=[{k:'branco',max:5000},{k:'verde',max:10000},{k:'azul',max:15000},{k:'vermelho',max:20000},{k:'preto',max:40000},{k:'laranja',max:70000},{k:'prata',max:100000},{k:'dourado',max:Infinity}];
+  document.querySelectorAll('.jlev').forEach(e=>e.classList.remove('current'));
+  let ci=lvls.findIndex(l=>fat<l.max);if(ci<0)ci=lvls.length-1;
+  const cur=lvls[ci],nxt=lvls[Math.min(ci+1,lvls.length-1)];
+  const cEl=document.querySelector(`.jlev[data-key="${cur.k}"]`);if(cEl)cEl.classList.add('current');
+  const msg=document.getElementById('jrn-msg');
+  if(msg){if(!fat)msg.textContent='Adicione clientes em Rentabilidade para calcular seu nível.';
+  else if(cur.k==='dourado')msg.textContent='🏆 Parabéns! Você atingiu o nível máximo: Guardião Dourado!';
+  else msg.textContent=`Você está em Guardião ${cur.k.charAt(0).toUpperCase()+cur.k.slice(1)} — avance R$ ${(nxt.max-fat).toLocaleString('pt-BR')} para Guardião ${nxt.k.charAt(0).toUpperCase()+nxt.k.slice(1)}`;}
+  const list=document.getElementById('dash-cli-list');
+  if(list)list.innerHTML=clients.length?clients.map(c=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px"><span>${c.nome}</span><span style="color:var(--gold);font-weight:600">R$ ${c.valor.toLocaleString('pt-BR')}</span></div>`).join(''):'<span style="color:#aaa;font-size:13px">Nenhum cliente cadastrado.</span>';
+}
+
+// ======= CLIENT MODAL =======
+function openClientModal(mode,idx){
+  document.getElementById('modal-client').classList.add('open');
+  if(mode==='edit'&&idx!==undefined){const c=clients[idx];document.getElementById('mc-title').textContent='Editar cliente';document.getElementById('mc-idx').value=idx;document.getElementById('mc-nome').value=c.nome;document.getElementById('mc-valor').value=c.valor;document.getElementById('mc-heq').value=c.hEquipe;document.getElementById('mc-hso').value=c.hSocio;}
+  else{document.getElementById('mc-title').textContent='Adicionar cliente';document.getElementById('mc-idx').value='';document.getElementById('mc-nome').value='';document.getElementById('mc-valor').value='';document.getElementById('mc-heq').value='';document.getElementById('mc-hso').value='';}
+}
+function closeClientModal(){document.getElementById('modal-client').classList.remove('open');}
+function saveClient(){
+  const nome=document.getElementById('mc-nome').value.trim();if(!nome){alert('Informe o nome.');return;}
+  const obj={nome,valor:parseInt(document.getElementById('mc-valor').value)||0,hEquipe:parseInt(document.getElementById('mc-heq').value)||0,hSocio:parseInt(document.getElementById('mc-hso').value)||0};
+  const idx=document.getElementById('mc-idx').value;
+  if(idx!=='')clients[parseInt(idx)]=obj;else clients.push(obj);
+  saveAll();closeClientModal();renderClients();
+}
+function delClient(i){if(!confirm(`Excluir "${clients[i].nome}"?`))return;clients.splice(i,1);saveAll();renderClients();}
+
+// ======= EXPORT / IMPORT =======
+function exportData(){
+  const matKeys={};
+  for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith('agios_mat_'))matKeys[k]=sg(k,{});}
+  const data={plans,clients,materials:matKeys,yt:getYTCfg(),version:3,exportedAt:new Date().toISOString()};
+  const b=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='agios-growth-backup.json';a.click();
+  toast('Dados exportados!');
+}
+function importData(){document.getElementById('import-file').click();}
+function handleImport(inp){
+  const f=inp.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=e=>{try{
+    const d=JSON.parse(e.target.result);
+    if(d.plans)plans=d.plans;
+    if(d.clients)clients=d.clients;
+    if(d.materials)Object.entries(d.materials).forEach(([k,v])=>localStorage.setItem(k,JSON.stringify(v)));
+    if(d.yt)ss(SK.yt,d.yt);
+    saveAll();updDash();toast('Dados importados com sucesso!');
+  }catch(err){alert('Arquivo inválido.');}};
+  r.readAsText(f);inp.value='';
+}
+
+// ======= TOAST =======
+function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2500);}
+
+// ======= INIT =======
+loadAll();updDash();
+</script>
+</body>
+</html>
