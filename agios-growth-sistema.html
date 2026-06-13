@@ -133,18 +133,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .act-btn{background:none;border:none;cursor:pointer;padding:4px 6px;border-radius:4px;transition:background .15s;font-size:15px}
 .act-btn:hover{background:#f0f0f0}
 /* Journey */
-.jrn-wrap{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:18px}
-.jrn-levels{display:flex;gap:5px;margin:12px 0;overflow-x:auto;padding-bottom:4px}
-.jlev{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:70px}
-.jlev-belt{width:54px;height:54px;border-radius:50%;overflow:hidden;border:2.5px solid #444;transition:all .25s;cursor:default;flex-shrink:0}
+.jrn-wrap{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:18px}
+.jrn-levels{display:flex;margin:18px 0 6px;justify-content:space-evenly;align-items:flex-start;gap:0}
+.jlev{display:flex;flex-direction:column;align-items:center;gap:7px;flex:1}
+.jlev-belt{width:72px;height:72px;border-radius:50%;overflow:hidden;border:2.5px solid #444;transition:all .25s;cursor:default;flex-shrink:0}
 .jlev.current .jlev-belt{border-color:#d4a843;box-shadow:0 0 0 4px rgba(212,168,67,.18),0 2px 12px rgba(0,0,0,.25)}
 .jlev-belt img{width:100%;height:100%;object-fit:cover;object-position:center;display:block}
 .acq-icon-prem{width:70px;height:70px;background:#111;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2.5px solid #d4a843;box-shadow:0 0 18px rgba(212,168,67,.2),0 4px 16px rgba(0,0,0,.35);margin-bottom:16px;flex-shrink:0}
 .acq-icon-prem svg{width:36px;height:36px}
 .jlev-c{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:700;border:2px solid transparent}
 .jlev.current .jlev-c{border-color:var(--gold);box-shadow:0 0 0 3px rgba(212,168,67,.2)}
-.jlev-n{font-size:10px;color:#888;font-weight:500}
-.jlev-v{font-size:9px;color:#aaa}
+.jlev-n{font-size:11px;color:#888;font-weight:500}
+.jlev-v{font-size:10px;color:#aaa}
 /* Modal */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center}
 .modal-overlay.open{display:flex}
@@ -180,6 +180,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .tag{display:inline-block;font-size:9px;padding:2px 8px;border-radius:3px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
 .t-setup{background:#fef3c7;color:#92400e}.t-google{background:#dbeafe;color:#1e40af}.t-vendas{background:#f3e8ff;color:#6b21a8}.t-engaj{background:#dcfce7;color:#15803d}.t-leads{background:#fee2e2;color:#b91c1c}.t-serv{background:#f1f5f9;color:#475569}
 .top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
+.toggle-row label.form-lbl{margin-bottom:0}
+.toggle-vis{display:flex;align-items:center;gap:5px;font-size:11px;color:#888;cursor:pointer}
+.toggle-vis input{accent-color:var(--gold);width:14px;height:14px}
 .int-section{margin-bottom:28px}
 .int-section-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--ts);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
 .int-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
@@ -297,7 +301,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div class="sb-foot">
     <div class="avatar">TN</div>
     <div style="flex:1"><div style="font-size:12px;color:#e0e0e0;font-weight:500">Toni</div><div style="font-size:10px;color:#555">Ágios Growth</div></div>
-    <button onclick="openYT()" title="Configurar YouTube" style="background:none;border:none;cursor:pointer;color:#555;font-size:18px;transition:color .15s" onmouseover="this.style.color='#d4a843'" onmouseout="this.style.color='#555'">⚙</button>
+    <button onclick="openMyData()" title="Meus dados" style="background:none;border:none;cursor:pointer;color:#555;transition:color .15s;display:flex;align-items:center" onmouseover="this.style.color='#d4a843'" onmouseout="this.style.color='#555'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
+    <button onclick="openYT()" title="Configurar YouTube" style="background:none;border:none;cursor:pointer;color:#555;font-size:17px;transition:color .15s" onmouseover="this.style.color='#d4a843'" onmouseout="this.style.color='#555'">⚙</button>
   </div>
 </nav>
 
@@ -734,6 +739,53 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
 </div>
 
+<!-- MODAL: MEUS DADOS -->
+<div class="modal-overlay" id="modal-mydata">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-title">Meus Dados</div>
+      <button class="modal-close" onclick="closeMyData()">×</button>
+    </div>
+    <div style="font-size:12.5px;color:var(--ts);margin-bottom:16px;padding:10px 12px;background:#f9f9f9;border-radius:6px">Configure seus dados e escolha o que exibir na proposta do cliente.</div>
+    <div class="form-grp">
+      <label class="form-lbl">Nome / Empresa</label>
+      <input class="form-inp" id="md-name" type="text" placeholder="Ex: Antonio Junior — Ágios Growth">
+    </div>
+    <div class="form-grp">
+      <div class="toggle-row">
+        <label class="form-lbl">Endereço</label>
+        <label class="toggle-vis"><input type="checkbox" id="md-show-address"> Exibir na proposta</label>
+      </div>
+      <input class="form-inp" id="md-address" type="text" placeholder="Ex: Ribeirão Preto, SP">
+    </div>
+    <div class="form-grp">
+      <div class="toggle-row">
+        <label class="form-lbl">CPF / CNPJ</label>
+        <label class="toggle-vis"><input type="checkbox" id="md-show-cnpj"> Exibir na proposta</label>
+      </div>
+      <input class="form-inp" id="md-cnpj" type="text" placeholder="Ex: 12.345.678/0001-90">
+    </div>
+    <div class="form-grp">
+      <div class="toggle-row">
+        <label class="form-lbl">Telefone / WhatsApp</label>
+        <label class="toggle-vis"><input type="checkbox" id="md-show-phone"> Exibir na proposta</label>
+      </div>
+      <input class="form-inp" id="md-phone" type="text" placeholder="Ex: (16) 99999-9999">
+    </div>
+    <div class="form-grp">
+      <div class="toggle-row">
+        <label class="form-lbl">Redes Sociais</label>
+        <label class="toggle-vis"><input type="checkbox" id="md-show-social"> Exibir na proposta</label>
+      </div>
+      <input class="form-inp" id="md-social" type="text" placeholder="Ex: @agiosgrowth · instagram.com/agiosgrowth">
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+      <button class="btn-out" onclick="closeMyData()">Cancelar</button>
+      <button class="btn-gold" onclick="saveMyData()">Salvar</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL: YOUTUBE SETTINGS -->
 <div class="modal-overlay" id="modal-yt">
   <div class="modal">
@@ -1098,26 +1150,79 @@ function updValidity(hasSel){
   if(hasSel){vEl.textContent=fmtExpDate(calcExpiry());if(vWarn)vWarn.textContent='Proposta válida por 7 dias';}
   else{vEl.textContent='Selecione os serviços';if(vWarn)vWarn.textContent='';}
 }
+function getMyData(){try{return JSON.parse(localStorage.getItem('agios_mydata')||'{}');}catch(e){return {};}}
+function openMyData(){const d=getMyData();document.getElementById('md-name').value=d.name||'Toni — Ágios Growth';document.getElementById('md-address').value=d.address||'';document.getElementById('md-show-address').checked=d.showAddress||false;document.getElementById('md-cnpj').value=d.cnpj||'';document.getElementById('md-show-cnpj').checked=d.showCnpj||false;document.getElementById('md-phone').value=d.phone||'';document.getElementById('md-show-phone').checked=d.showPhone||false;document.getElementById('md-social').value=d.social||'';document.getElementById('md-show-social').checked=d.showSocial||false;document.getElementById('modal-mydata').classList.add('open');}
+function closeMyData(){document.getElementById('modal-mydata').classList.remove('open');}
+function saveMyData(){const d={name:document.getElementById('md-name').value.trim(),address:document.getElementById('md-address').value.trim(),showAddress:document.getElementById('md-show-address').checked,cnpj:document.getElementById('md-cnpj').value.trim(),showCnpj:document.getElementById('md-show-cnpj').checked,phone:document.getElementById('md-phone').value.trim(),showPhone:document.getElementById('md-show-phone').checked,social:document.getElementById('md-social').value.trim(),showSocial:document.getElementById('md-show-social').checked};localStorage.setItem('agios_mydata',JSON.stringify(d));closeMyData();toast('Dados salvos!');}
+
 function dlProposal(){
   const sel=Object.values(plans).filter(p=>s2[p.id]);
+  if(!sel.length){toast('Selecione ao menos um servi\u00e7o.');return;}
   const disc=parseInt(document.getElementById('s2-disc')?.value)||0;
   const tot=Math.max(0,sel.reduce((s,p)=>s+p.price,0)-disc);
-  const yt=getYTCfg();
+  const yt=getYTCfg();const md=getMyData();
   const expStr=fmtExpDate(calcExpiry());
-  let txt=`PROPOSTA COMERCIAL — ÁGIOS GROWTH\n`;
-  txt+=`Data: ${new Date().toLocaleDateString('pt-BR')}\n`;
-  txt+=`Validade: ${expStr} (7 dias)\n${'─'.repeat(45)}\n\n`;
-  sel.forEach(p=>{
-    txt+=`${p.name.toUpperCase()} — R$ ${p.price.toLocaleString('pt-BR')}/mês\n`;
-    txt+='Entregáveis:\n';
-    getSelDels(p.id).forEach(d=>txt+=`  • ${d}\n`);
-    txt+='\n';
-  });
-  txt+=`${'─'.repeat(45)}\n`;
-  if(disc>0)txt+=`Desconto: – R$ ${disc.toLocaleString('pt-BR')}\n`;
-  txt+=`TOTAL MENSAL: R$ ${tot.toLocaleString('pt-BR')}\n\nContato: Toni — Ágios Growth\n`;
-  if(yt.url)txt+=`Canal: ${yt.url}\n`;
-  const b=new Blob([txt],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='proposta-agios-growth.txt';a.click();
+  const date=new Date().toLocaleDateString('pt-BR');
+  const svcHtml=sel.map(p=>{
+    const dels=getSelDels(p.id);
+    return '<div style="margin-bottom:16px;border:1px solid #2a2a2a;border-radius:10px;overflow:hidden">'
+      +'<div style="background:#1a1a1a;padding:14px 20px;display:flex;justify-content:space-between;align-items:center">'
+      +'<span style="color:#fff;font-size:13px;font-weight:600;letter-spacing:.5px">'+p.name.toUpperCase()+'</span>'
+      +'<span style="color:#d4a843;font-size:15px;font-weight:700">R$\u00a0'+p.price.toLocaleString('pt-BR')+'/m\u00eas</span>'
+      +'</div>'
+      +'<div style="padding:12px 20px;background:#0d0d0d">'
+      +dels.map(d=>'<div style="display:flex;align-items:flex-start;gap:8px;padding:5px 0;border-bottom:1px solid #1a1a1a;font-size:12px;color:#bbb;line-height:1.4"><span style="color:#22c55e;flex-shrink:0">\u2713</span>'+d+'</div>').join('')
+      +'</div></div>';
+  }).join('');
+  let contactHtml='';
+  const nm=md.name||'Toni \u2014 \u00c1gios Growth';
+  contactHtml+='<div style="font-size:14px;font-weight:600;color:#fff;margin-bottom:4px">'+nm+'</div>';
+  if(md.phone&&md.showPhone)contactHtml+='<div style="font-size:12px;color:#aaa;margin-top:3px">\u260e\ufe0f '+md.phone+'</div>';
+  if(md.address&&md.showAddress)contactHtml+='<div style="font-size:12px;color:#aaa;margin-top:3px">\ud83d\udccd '+md.address+'</div>';
+  if(md.cnpj&&md.showCnpj)contactHtml+='<div style="font-size:12px;color:#aaa;margin-top:3px">CNPJ: '+md.cnpj+'</div>';
+  if(md.social&&md.showSocial)contactHtml+='<div style="font-size:12px;color:#d4a843;margin-top:3px">'+md.social+'</div>';
+  if(yt.url)contactHtml+='<div style="font-size:12px;color:#d4a843;margin-top:2px">'+yt.url+'</div>';
+  const discHtml=disc>0?'<div style="display:flex;justify-content:space-between;font-size:12px;color:#555;padding:6px 0;border-bottom:1px solid #1a1a1a;margin-bottom:10px"><span>Desconto</span><span style="color:#ef4444">\u2013 R$\u00a0'+disc.toLocaleString('pt-BR')+'</span></div>':'';
+  const h='<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Proposta \u2014 \u00c1gios Growth</title>'
+    +'<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#0a0a0a;-webkit-print-color-adjust:exact;print-color-adjust:exact}'
+    +'.page{max-width:700px;margin:0 auto;background:#111;min-height:100vh}'
+    +'.hdr{background:#0a0a0a;padding:28px 36px;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #d4a843}'
+    +'.logo{font-size:18px;font-weight:700;color:#fff;letter-spacing:3px;text-transform:uppercase}'
+    +'.logo-sub{font-size:8px;color:#d4a843;letter-spacing:3px;text-transform:uppercase;margin-top:3px}'
+    +'.body{padding:32px 36px}'
+    +'.total-box{background:#0a0a0a;border:1.5px solid #d4a843;border-radius:10px;padding:20px 24px;margin-top:22px}'
+    +'.footer-bar{background:#0a0a0a;padding:22px 36px;border-top:1px solid #1a1a1a;display:flex;justify-content:space-between;align-items:flex-end}'
+    +'.print-btn{position:fixed;bottom:22px;right:22px;background:#d4a843;color:#111;border:none;padding:11px 22px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(212,168,67,.35)}'
+    +'@media print{.print-btn{display:none}}'
+    +'</style></head><body>'
+    +'<div class="page">'
+    +'<div class="hdr">'
+    +'<div><div class="logo">\u00c1gios Growth</div><div class="logo-sub">Sistema de Planos</div></div>'
+    +'<div style="text-align:right;font-size:11px;color:#555;line-height:2"><div>Data: <span style="color:#d4a843;font-weight:500">'+date+'</span></div><div>V\u00e1lido at\u00e9: <span style="color:#d4a843;font-weight:500">'+expStr+'</span></div></div>'
+    +'</div>'
+    +'<div class="body">'
+    +'<div style="font-size:24px;font-weight:700;color:#fff;margin-bottom:4px">Proposta Comercial</div>'
+    +'<div style="font-size:11px;color:#444;margin-bottom:26px;padding-bottom:18px;border-bottom:1px solid #1a1a1a">Proposta v\u00e1lida por 7 dias &nbsp;\u00b7&nbsp; Elaborada por \u00c1gios Growth</div>'
+    +svcHtml
+    +'<div class="total-box">'
+    +discHtml
+    +'<div style="font-size:10px;color:#555;text-transform:uppercase;letter-spacing:1.8px;margin-bottom:7px">Total Mensal</div>'
+    +'<div style="font-size:38px;font-weight:700;color:#d4a843">R$\u00a0'+tot.toLocaleString('pt-BR')+'</div>'
+    +'<div style="font-size:11px;color:#333;margin-top:5px">/m\u00eas</div>'
+    +'</div>'
+    +'</div>'
+    +'<div class="footer-bar">'
+    +'<div>'+contactHtml+'</div>'
+    +'<div style="text-align:right"><div style="font-size:8px;color:#333;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:3px">Powered by</div><div style="font-size:11px;color:#d4a843;font-weight:600">\u00c1gios Growth System</div></div>'
+    +'</div>'
+    +'</div>'
+    +'<button class="print-btn" onclick="window.print()">\uD83D\uDDA8 Imprimir / Salvar PDF</button>'
+    +'</body></html>';
+  const blob=new Blob([h],{type:'text/html'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.target='_blank';a.download='proposta-agios-growth.html';a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),3000);
+  toast('Proposta gerada! Abra o arquivo no navegador e clique em Imprimir para salvar como PDF.');
 }
 
 // ======= RENTABILIDADE =======
