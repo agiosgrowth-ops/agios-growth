@@ -472,7 +472,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="step-it" id="stp2"><div class="step-c" id="stp2-c">2</div><span id="stp2-lbl" style="color:#aaa">Pacote do cliente</span></div>
   </div>
   <div id="calc-s1">
-    <div style="margin-bottom:14px"><div style="font-size:14px;font-weight:600">Configure seus serviços</div><div style="font-size:12.5px;color:#888;margin-top:3px">Selecione os planos que você oferece e defina seus preços</div></div>
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:12px">
+      <div><div style="font-size:14px;font-weight:600">Configure seus serviços</div><div style="font-size:12.5px;color:#888;margin-top:3px">Selecione os planos que você oferece e defina seus preços</div></div>
+      <button class="btn-out" onclick="confirmResetPlans()" title="Restaura os planos originais, removendo entregáveis extras adicionados para clientes específicos" style="font-size:11.5px;padding:7px 12px;white-space:nowrap;flex-shrink:0">&#8634; Resetar planos originais</button>
+    </div>
     <div class="calc-layout">
       <div class="calc-l" id="calc-svcs"></div>
       <div class="calc-r"><div class="sum-dark"><div class="sum-hdr">Resumo do Pacote</div><div id="s1-lines"></div><hr class="sum-div"><div class="disc-row"><span style="font-size:12px;color:#888">Desconto</span><div style="display:flex;align-items:center;gap:4px"><span style="font-size:11px;color:var(--red)">&#8211; R$</span><input class="disc-inp" type="number" id="s1-disc" value="0" min="0" oninput="updS1()"></div></div><div class="sum-total" id="s1-total">R$ 0</div><div class="sum-period">/mês</div><div class="ent-res" id="s1-ent"></div><button class="btn-gold" style="width:100%;margin-top:14px;padding:10px;justify-content:center" onclick="goS2()">Próximo: montar pacote do cliente &#8594;</button></div></div>
@@ -630,6 +633,19 @@ function hasMat(pid,idx){const d=getMat(pid,idx);return d.notes||d.checklist.len
 function getMyData(){return sg('agios_mydata',{});}
 function getYTCfg(){return sg(SK.yt,{name:'',url:'',defaultVid:''});}
 function initPlans(){plans={};Object.keys(PD).forEach(k=>{plans[k]={...PD[k],dels:[...PD[k].dels],delActive:PD[k].dels.map(()=>true),videoUrl:'',mats:[...PD[k].mats]};});}
+function confirmResetPlans(){
+  if(!confirm('Isso vai restaurar TODOS os planos para a configuração original do sistema.\n\nEntregáveis extras que você adicionou para clientes específicos serão removidos permanentemente. Preços personalizados, vídeos e materiais salvos NÃO serão afetados.\n\nDeseja continuar?'))return;
+  Object.keys(PD).forEach(k=>{
+    const cur=plans[k]||{};
+    plans[k]={...PD[k],dels:[...PD[k].dels],delActive:PD[k].dels.map(()=>true),price:cur.price!==undefined?cur.price:PD[k].price,videoUrl:cur.videoUrl||'',mats:cur.mats?cur.mats:[...PD[k].mats]};
+  });
+  saveAll();
+  calcDel={};
+  s1={};s2={};
+  Object.keys(PD).forEach(k=>{s1[k]=false;});
+  renderCalc();
+  toast('Planos restaurados para o padrão original!');
+}
 function loadAll(){
   const saved=sg(SK.plans,null);
   if(saved&&Object.keys(saved).length>0){plans=saved;Object.keys(PD).forEach(k=>{if(!plans[k])plans[k]={...PD[k],dels:[...PD[k].dels],delActive:PD[k].dels.map(()=>true),videoUrl:'',mats:[...PD[k].mats]};if(!plans[k].delActive)plans[k].delActive=plans[k].dels.map(()=>true);if(!plans[k].videoUrl)plans[k].videoUrl='';});}
@@ -823,7 +839,16 @@ function saveOrcamento(){
   const tot=Math.max(0,sel.reduce((s,p)=>s+p.price,0)-disc);
   const now=new Date();const exp=calcExpiry();
   const orc={id:Date.now(),cliente,servicos:sel.map(p=>p.name),valor:tot,desconto:disc,status:document.getElementById('orc-status-init').value,obs:document.getElementById('orc-obs').value.trim(),dataCriacao:now.toISOString(),dataValidade:exp.toISOString(),entregaveis:sel.reduce((acc,p)=>{acc[p.name]=getSelDels(p.id);return acc;},{})};
-  orcamentos.unshift(orc);saveOrcList();closeSaveOrc();updOrcBadge();toast('Or\u00e7amento salvo! Acesse a aba Or\u00e7amentos para gerenciar.');
+  orcamentos.unshift(orc);saveOrcList();closeSaveOrc();updOrcBadge();toast('Or\u00e7amento salvo! Calculadora pronta para o pr\u00f3ximo.');
+  resetCalcForNew();
+}
+function resetCalcForNew(){
+  s2={};
+  Object.keys(s1).forEach(k=>s1[k]=false);
+  const s2discEl=document.getElementById('s2-disc');if(s2discEl)s2discEl.value=0;
+  const s1discEl=document.getElementById('s1-disc');if(s1discEl)s1discEl.value=0;
+  goS1();
+  renderCalc();
 }
 function updOrcBadge(){const badge=document.getElementById('orc-badge');if(!badge)return;const n=orcamentos.filter(o=>o.status==='analise').length;if(n>0){badge.textContent=n;badge.style.display='inline-block';}else badge.style.display='none';}
 function getOrcStatus(orc){if(orc.status==='aprovado')return'aprovado';if(orc.status==='recusado')return'recusado';if(new Date()>new Date(orc.dataValidade))return'expirado';return'analise';}
@@ -873,6 +898,7 @@ function dlOrcPDF(id){
   const expStr=new Date(o.dataValidade).toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
   const md=getMyData();const yt=getYTCfg();
   const svcHtml=sels.map(p=>'<div style="margin-bottom:16px;border:1px solid #2a2a2a;border-radius:10px;overflow:hidden"><div style="background:#1a1a1a;padding:14px 20px"><span style="color:#fff;font-size:13px;font-weight:600">'+p.name.toUpperCase()+'</span></div>'+(p.dels.length?'<div style="padding:12px 20px;background:#0d0d0d">'+p.dels.map(d=>'<div style="display:flex;align-items:flex-start;gap:8px;padding:5px 0;border-bottom:1px solid #1a1a1a;font-size:12px;color:#bbb"><span style="color:#22c55e">\u2713</span>'+d+'</div>').join('')+'</div>':'')+'</div>').join('');
+  const obsHtml=o.obs?'<div style="margin-top:18px;background:#15130a;border:1px solid #3a3320;border-radius:10px;padding:16px 20px"><div style="font-size:10px;color:#d4a843;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:8px">Observa\u00e7\u00f5es</div><div style="font-size:12.5px;color:#ccc;line-height:1.6">'+o.obs.replace(/\n/g,'<br>')+'</div></div>':'';
   let contactHtml='<div style="font-size:14px;font-weight:600;color:#fff;margin-bottom:4px">'+(md.name||'Toni \u2014 \u00c1gios Growth')+'</div>';
   if(md.phone&&md.showPhone)contactHtml+='<div style="font-size:12px;color:#aaa;margin-top:3px">'+md.phone+'</div>';
   if(md.social&&md.showSocial)contactHtml+='<div style="font-size:12px;color:#d4a843;margin-top:3px">'+md.social+'</div>';
@@ -882,6 +908,7 @@ function dlOrcPDF(id){
     +'<div style="font-size:11px;color:#444;margin-bottom:26px;padding-bottom:18px;border-bottom:1px solid #1a1a1a">Proposta v\u00e1lida por 7 dias</div>'
     +svcHtml
     +'<div style="background:#0a0a0a;border:1.5px solid #d4a843;border-radius:10px;padding:20px 24px;margin-top:22px"><div style="font-size:10px;color:#555;text-transform:uppercase;letter-spacing:1.8px;margin-bottom:7px">Total Mensal</div><div style="font-size:38px;font-weight:700;color:#d4a843">R$\u00a0'+o.valor.toLocaleString('pt-BR')+'</div><div style="font-size:11px;color:#333;margin-top:5px">/m\u00eas</div></div>'
+    +obsHtml
     +'</div><div style="background:#0a0a0a;padding:22px 36px;border-top:1px solid #1a1a1a;display:flex;justify-content:space-between;align-items:flex-end"><div>'+contactHtml+'</div><div style="text-align:right"><div style="font-size:8px;color:#333;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:3px">Powered by</div><div style="font-size:11px;color:#d4a843;font-weight:600">\u00c1gios Growth System</div></div></div></div>'
     +'<button class="print-btn" onclick="window.print()">Imprimir / Salvar PDF</button></body></html>';
   const blob=new Blob([h],{type:'text/html'});const url=URL.createObjectURL(blob);
